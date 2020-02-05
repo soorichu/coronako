@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <% include partials/head %> 
+</head>
+<body>
+<% include partials/menu %>
+  <h4 style="text-align: center; margin-top:10px;">코로나 바이러스 <select id="nations" class="btn btn-warning dropdown-toggle"></select> 추이</h4>
+  <div id="korea" style="width:100%;"></div>
+  <hr>
+  <div id="world" style="width:100%;"></div>
+  <hr>
+  <h4 style="text-align: center; margin-top:10px;">
+    코로나 바이러스 자료 원본 테이블
+  </h4>
+  <table id="coronaTable" class="table table-striped"></table>
+  <% include partials/foot %>
+</body>
+<% include partials/script %>
+<script>
+  $(function(){
+
+    var date = [];
+    var colsEng = [
+                   'Died', 'Infected', 'China', 'Korea',
+                   'HongKong', 'Taiwan', 'Macau', 'Thiland',
+                   'Singapore', 'Japan', 'Vietnam', 'Nepal',
+                   'Malaysia', 'Cambodia', 'SirLangKa', 'UAE',
+                   'India', 'Philippine', 'USA', 'Canada',
+                   'France', 'Germany', 'Finland', 'Italy',
+                   'UK', 'Russia', 'Sweden', 'Spain',
+                   'Australia'
+                  ];
+    var colsKor = [
+                   '총 사망자수', '총 감염자수', '중국', '한국',
+                   '홍콩', '태국', '마카오', '대만',
+                   '싱가포르', '일본', '베트남', '네팔',
+                   '말레이시아', '캄보디아', '스리랑카', '아랍에미리트',
+                   '인도', '필리핀', '미국', '캐나다',
+                   '프랑스', '독일', '핀란드', '이탈리아',
+                   '영국', '러시아', '스웨덴', '스페인',
+                   '호주'
+                  ];
+
+    var data = new Array(colsEng.length);
+
+    Plotly.d3.csv("./file/corona.csv", function(data){ processData(data) });
+
+
+    function nationData(nation){
+      var index = colsEng.indexOf(nation);
+
+      var trace = [{
+        x : date,
+        y : data[index],
+        name : colsKor[index]
+      }];
+
+      Plotly.newPlot("korea", trace, {});
+    }
+
+
+    function processData(allRows){
+
+      var len = allRows.length;
+      var options = "";
+      var tables = "<thead><tr><th>날짜</th>";
+
+      for(var i=0; i<colsEng.length;i++){
+        tables += "<th>"+colsKor[i]+"</th>";
+      }
+
+      tables += "</tr></thead><tbody>";
+
+      for (var i=0; i<allRows.length; i++){
+        row = allRows[i];
+        date.push(row['Date']);
+        tables += "<tr><th>"+ row['Date'] +"</th>";
+        for(var j=0; j<colsEng.length;j++){
+          if(data[j] == null){ data[j] = []; }
+          data[j].push(row[colsEng[j]]);
+          tables += "<td>"+ row[colsEng[j]] + "</td>";
+          if(colsEng[j]==='Korea'){
+            options += "<option value='"+colsEng[j]+"' selected>"+colsKor[j]+"</option>";
+          }else{
+            options += "<option value='"+colsEng[j]+"'>"+colsKor[j]+"</option>";
+          }
+        }
+        tables += "</tr>";
+      }
+      tables += "</tbody>";
+
+      var traceAll = [];
+
+      for(var i=0; i<colsEng.length; i++){
+        traceAll.push({
+          x : date, 
+          y : data[i],
+          name : colsKor[i] +"(" + data[i][len-1]+")"
+        });
+      }
+
+      $("#nations").html(options);
+      Plotly.newPlot("world", traceAll, {title:'코로나 바이러스 전세계 추이'});
+
+      nationData('Korea');
+      $("#nations").change(function(){
+        nationData($(this).val());
+      });
+
+      $("#coronaTable").html(tables);
+
+
+    }
+
+
+  });
+</script>
+</html>

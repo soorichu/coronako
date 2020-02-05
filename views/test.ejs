@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <% include partials/head %> 
+</head>
+<body>
+<% include partials/menu %>
+
+<div class="container-fluid bg-3 text-center">    
+  <div class="row">
+    <div class="col-sm-4">
+      <button class="btn" onclick="peopleCSV2JSON()">peopleCSV2JSON()</button>
+      <p id="people"></p>
+    </div>
+    <div class="col-sm-4">
+      <button class="btn" onclick="positionCSV2JSON()">positionCSV2JSON()</button>
+      <p id="position"></p>
+   </div>
+   <div class="col-sm-4">
+      <input type="text" id="point1" value="37.536564, 126.636473" class="form-control"><br>
+      <input type="text" id="point2" value="37.518566, 126.673022" class="form-control"><br>
+      <button class="btn" onclick="gps2Distance()">gps2Distance()</button>
+      <h4 id="distance"></h4>
+   </div>
+  </div>
+</div>
+<% include partials/foot %>
+</body>
+<% include partials/script %>
+<script>
+  //GPS 2 Distance
+  function gps2Distance(){
+
+    var point1 = $("#point1").val().split(","); 
+    var lat1 = Number(point1[0]), lng1 = Number(point1[1]);
+    var point2 = $("#point2").val().split(","); 
+    var lat2 = Number(point2[0]), lng2 = Number(point2[1]);
+
+    var distLat = 69.1 *(lat2 - lat1);
+    var distLng = 53 * (lng2 - lng1);
+    var distance = Math.sqrt(distLat*distLat + distLng*distLng);
+    console.log(distLat, distLng, distance);
+
+    $("#distance").text(distance*1.609 +" km"); 
+
+  }
+
+
+
+//CSV 2 JSON
+  var type;
+  function peopleCSV2JSON(){
+    type = "people";
+    readCSVFile(type);
+  }
+
+  function positionCSV2JSON(){
+    type = "position";
+    readCSVFile("position");
+  }
+
+  function readCSVFile(type)
+  {
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", "./file/"+type+".csv", false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText;
+                $("#"+type).text(processData(allText));
+            }
+        }
+    }
+    rawFile.send(null);
+  }
+  
+  function processData(csv){
+
+    var lines=csv.split("\n");
+    var result = [];
+    var headers=lines[0].split(",");
+
+    for(var i=1;i<lines.length;i++){
+
+      var obj = {};
+      var currentline = lines[i].split(",");
+
+      for(var j=0;j<headers.length;j++){ 
+        obj[headers[j]] = currentline[j];
+      }   
+     
+      result.push(obj);
+    }
+    return JSON.stringify(result);
+  }
+</script>
+</html>

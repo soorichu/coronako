@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <% include partials/head %> 
+<link rel="stylesheet" href="./stylesheets/map.css">
+</head>
+<body>
+<% include partials/menu %>
+
+<div id="map" style="width:100%;height:100%;"></div>
+<img id="thispot" src="./img/thispot.png" onclick="geoLocation()"/>
+
+<% include partials/foot %>
+</body>
+  <% include partials/script %>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d8b15cafc174093e55e3a668723818fb&libraries=services,clusterer"></script>
+  <script>
+
+    // $("#search").css("display", "inline");
+
+    // $("#search").click(function(){
+       // if($("#searchbar").css("display") == "none"){
+        // $("#searchbar").show(); $("#search").css("color", "#777777");
+      // }else{
+        // $("#searchbar").hide(); $("#search").css("color", "#f0ad4e");
+      // }
+
+    // });
+
+    var lat = 37.555800, lng = 126.969732;  //기본 위도 경도 : 서울역
+    var locPosition = new kakao.maps.LatLng(lat, lng);
+    navigator.geolocation.getCurrentPosition(function(position) {
+      lat = position.coords.latitude, // 위도
+      lng = position.coords.longitude; // 경도
+            
+      locPosition = new kakao.maps.LatLng(lat, lng);  
+    });
+
+    var map = new kakao.maps.Map(document.getElementById('map'), { 
+        center : new kakao.maps.LatLng(lat, lng), 
+        level : 7
+    });
+
+
+    function geoLocation(){
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            lat = position.coords.latitude, // 위도
+            lng = position.coords.longitude; // 경도
+            
+            locPosition = new kakao.maps.LatLng(lat, lng);  
+          });
+
+        map.panTo(locPosition);
+        condition(lat, lng);
+        
+      } else { 
+          alert("현재 위치 사용 불가");
+      }
+
+    }
+
+
+    $(".close").click(function(){
+      $(".makeMarker").hide();
+    });
+
+    function makeMarker(result, small, large){
+      content = '<div class="wrap makeMarker">' + 
+                '    <div class="info">' + 
+                '        <div class="title">' + result +
+                '            <div class="close" id="close" title="닫기"></div>' + 
+                '        </div>' + 
+                '        <div class="body">' + 
+                '            <div class="img">' +
+                '                <img src="./img/mask_'+result+ '.png" width="73" height="70">' +
+                '           </div>' + 
+                '            <div class="desc">' + 
+                '                <div class="ellipsis">반경 1키로 내 감염자 동선 '+small+'곳</div>' + 
+                '                <div class="ellipsis">반경 5키로 내 감염자 동선 '+large+'곳</div>' + 
+                '            </div>' + 
+                '        </div>' + 
+                '    </div>' +    
+                '</div>';
+        marker = new kakao.maps.Marker({
+          map: map,
+          position: locPosition,
+          center : locPosition
+        });
+
+        overlay = new kakao.maps.CustomOverlay({
+            content: content,
+            map: map,
+            position: locPosition     
+        });
+
+    }
+
+    function condition(lat, lng){
+      var small = 0; //반경 1키로 이내
+      var large = 0; //반경 5키로 이내
+
+      $.get("./file/position.json", function(data){
+         $(data.positions).map(function(i, position){
+          var dist = distance(lat, lng, position.lat, position.lng);
+          console.log(dist, dist<100, dist<50);
+            if( dist < 5){
+              large++;
+              if( dist < 1){
+                small++;
+              }
+            }
+         });
+
+        var result, message;
+        if(small*5 + large*1 < 5){
+          result = "GOOD";
+        }else if(small*5 + large*1 < 10){
+          result = "SOSO";
+        }else{
+          result = "BAD";
+        }
+
+        makeMarker(result, small, large);
+      });
+
+    }
+
+    function distance(lat1, lng1, lat2, lng2){
+      var distLat = 69.1 *(lat2 - lat1);
+      var distLng = 53 * (lng2 - lng1);
+      var distance = Math.sqrt(distLat*distLat + distLng*distLng);
+
+      return distance*1.609; 
+    }
+
+    var zoomControl = new kakao.maps.ZoomControl();
+    map.addControl(zoomControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+    var clusterer = new kakao.maps.MarkerClusterer({
+        map: map,
+        minLevel: 8,
+        calculator: [4, 12],
+        styles: [{
+          width : '50px', height : '50px',
+          background: 'rgba(255, 225, 0, .8)',
+          borderRadius: '40px',
+          color: '#000',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          lineHeight: '41px'
+        },
+        {
+          width : '60px', height : '60px',
+          background: 'rgba(255, 127, 0, .8)',
+          borderRadius: '50px',
+          color: '#000',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          lineHeight: '51px'
+        },
+        {
+          width : '80px', height : '80px',
+          background: 'rgba(255, 0, 0, .8)',
+          borderRadius: '60px',
+          color: '#000',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          lineHeight: '61px'
+        }]
+    });
+
+    var dangerImage = "./img/dangerspot.png";
+    var imageSize = new kakao.maps.Size(50, 55);
+    var markerImage = new kakao.maps.MarkerImage(dangerImage, imageSize);
+
+    $.get("./file/position.json", function(data){
+        var dangerMarkers = $(data.positions).map(function(i, position){
+            return new kakao.maps.Marker({
+              map: map,
+              position : new kakao.maps.LatLng(Number(position.lat), Number(position.lng)),
+              title: position.loc+"\n"+position.date+"에 "+position.person+"번 확진자가 다녀감.",
+              image: markerImage
+            });
+
+        });
+
+        clusterer.addMarkers(dangerMarkers);
+    });
+
+
+
+  </script>
+</html>
