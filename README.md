@@ -1,6 +1,6 @@
-# CORONA ko
+# 코로나앱
 * https://github.com/soorichu/coronako
-* https://coronako.herokuapp.com
+* https://coronapp.herokuapp.com
 
 아직 도메인 구매를 못 했음......^^;;; 
 
