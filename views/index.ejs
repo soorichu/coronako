@@ -19,15 +19,16 @@
   <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d8b15cafc174093e55e3a668723818fb&libraries=clusterer,services"></script>
   <script>
 
+    $("#logo").hide();
     $("#search").css("display", "inline");
 
     $("#search").click(function(){
        if($("#searchbar").css("display") == "none"){
-        $("#searchbar").show();
-        $("#menu_wrap").show();
+        $("#searchbar").slideDown();
+        $("#menu_wrap").fadeIn();
       }else{
-        $("#searchbar").hide(); 
-        $("#menu_wrap").hide();
+        $("#searchbar").slideUp();
+        $("#menu_wrap").fadeOut();
         removeMarker();
       }
 

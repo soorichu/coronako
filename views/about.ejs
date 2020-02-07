@@ -47,8 +47,13 @@
 <% include partials/foot %>
 </body>
 <% include partials/script %>
-<!-- <script>
+<script>
+
   $(function(){
+
+    $("#logo").css("display", "inline");
+    $("#search").hide();
+      /*
     var date = new Date();
     var year = date.getFullYear();
     var month = ("0"+(date.getMonth()+1)).slice(-2);
@@ -56,6 +61,8 @@
 
     var text = "http://dj.kbs.co.kr/resources/"+year+"-"+month+"-"+day+"/#";
     $("#kbsdb").attr("href", text);
+      */
   });
-</script> -->
+
+</script>
 </html>
