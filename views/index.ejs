@@ -8,24 +8,36 @@
 <% include partials/menu %>
 
 <div id="map" style="width:100%;height:100%;"></div>
+<div id="menu_wrap" class="bg_white" style="display:none;">
+        <ul id="placesList"></ul>
+        <div id="pagination"></div>
+    </div>
 <img id="thispot" src="./img/thispot.png" onclick="geoLocation()"/>
 
 <% include partials/foot %>
-</body>
   <% include partials/script %>
-  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d8b15cafc174093e55e3a668723818fb&libraries=services,clusterer"></script>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d8b15cafc174093e55e3a668723818fb&libraries=clusterer,services"></script>
   <script>
 
-    // $("#search").css("display", "inline");
+    $("#search").css("display", "inline");
 
-    // $("#search").click(function(){
-       // if($("#searchbar").css("display") == "none"){
-        // $("#searchbar").show(); $("#search").css("color", "#777777");
-      // }else{
-        // $("#searchbar").hide(); $("#search").css("color", "#f0ad4e");
-      // }
+    $("#search").click(function(){
+       if($("#searchbar").css("display") == "none"){
+        $("#searchbar").show();
+        $("#menu_wrap").show();
+      }else{
+        $("#searchbar").hide(); 
+        $("#menu_wrap").hide();
+        removeMarker();
+      }
 
-    // });
+    });
+
+    $(document).keydown(function(event){
+      if($("#searchbar").css("display")!="none" && event.keyCode=='13'){
+        searchPlaces();
+      }
+    });
 
     var lat = 37.555800, lng = 126.969732;  //기본 위도 경도 : 서울역
     var locPosition = new kakao.maps.LatLng(lat, lng);
@@ -41,6 +53,201 @@
         level : 7
     });
 
+    var markers = [];
+    var ps = new kakao.maps.services.Places();
+    var infowindow = new kakao.maps.InfoWindow({
+      map: map,
+      position: locPosition,
+    });
+
+    searchPlaces();
+
+    function searchPlaces(){
+      var keyword = $("#keyword").val();
+      ps.keywordSearch(keyword, placesSearchCB);
+    }
+
+    function placesSearchCB(data, status, pagination) {
+    if (status === kakao.maps.services.Status.OK) {
+
+        displayPlaces(data);
+        displayPagination(pagination);
+
+    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+
+        alert('검색 결과가 존재하지 않습니다.');
+        return;
+
+    } else if (status === kakao.maps.services.Status.ERROR) {
+
+        alert('검색 결과 중 오류가 발생했습니다.');
+        return;
+
+    }
+  }
+
+
+  function displayPlaces(places) {
+      var listEl = document.getElementById('placesList'), 
+      menuEl = document.getElementById('menu_wrap'),
+      fragment = document.createDocumentFragment(), 
+      bounds = new kakao.maps.LatLngBounds(), 
+      listStr = '';
+      
+      removeAllChildNods(listEl);
+
+      removeMarker();
+      
+      for ( var i=0; i<places.length; i++ ) {
+
+          var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
+              marker = addMarker(placePosition, i), 
+              itemEl = getListItem(i, places[i]);
+
+          bounds.extend(placePosition);
+
+          (function(marker, title) {
+
+              kakao.maps.event.addListener(marker, 'mouseover', function() {
+                  displayInfowindow(marker, title);
+              });
+
+              kakao.maps.event.addListener(marker, 'mouseout', function() {
+                  infowindow.close();
+              });
+
+              itemEl.onmouseover =  function () {
+                  displayInfowindow(marker, title);
+              };
+
+              itemEl.onmouseout =  function () {
+                  infowindow.close();
+              };
+
+              itemEl.onclick = function(){
+                conditions(placePosition.getLat(), placePosition.getLng());
+              };
+
+          })(marker, places[i].place_name);
+
+          fragment.appendChild(itemEl);
+      }
+
+      // 검색결과 항목들을 검색결과 목록 Elemnet에 추가합니다
+      listEl.appendChild(fragment);
+      menuEl.scrollTop = 0;
+
+      // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+      map.setBounds(bounds);
+  }
+
+  // 검색결과 항목을 Element로 반환하는 함수입니다
+  function getListItem(index, places) {
+
+      var el = document.createElement('li'),
+      itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>' +
+                  '<div class="info">' +
+                  '   <h5>' + places.place_name + '</h5>';
+
+      if (places.road_address_name) {
+          itemStr += '    <span>' + places.road_address_name + '</span>';
+      } else {
+          itemStr += '    <span>' +  places.address_name  + '</span>'; 
+      }
+
+      el.innerHTML = itemStr;
+      el.className = 'item';
+
+      return el;
+  }
+
+  function addMarker(position, idx, title) {
+      var imageSrc = 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', 
+          imageSize = new kakao.maps.Size(36, 37), 
+          imgOptions =  {
+              spriteSize : new kakao.maps.Size(36, 691), 
+              spriteOrigin : new kakao.maps.Point(0, (idx*46)+10), 
+              offset: new kakao.maps.Point(13, 37) 
+          },
+          markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+              marker = new kakao.maps.Marker({
+              position: position, 
+              image: markerImage 
+          });
+
+      marker.setMap(map); 
+      markers.push(marker);  
+
+      return marker;
+  }
+
+  function removeMarker() {
+      for ( var i = 0; i < markers.length; i++ ) {
+          markers[i].setMap(null);
+      }   
+      markers = [];
+  }
+
+  function displayPagination(pagination) {
+      var paginationEl = document.getElementById('pagination'),
+          fragment = document.createDocumentFragment(),
+          i; 
+
+      while (paginationEl.hasChildNodes()) {
+          paginationEl.removeChild (paginationEl.lastChild);
+      }
+
+      for (i=1; i<=pagination.last; i++) {
+          var el = document.createElement('a');
+          el.href = "#";
+          el.innerHTML = i;
+
+          if (i===pagination.current) {
+              el.className = 'on';
+          } else {
+              el.onclick = (function(i) {
+                  return function() {
+                      pagination.gotoPage(i);
+                  }
+              })(i);
+          }
+
+          fragment.appendChild(el);
+      }
+      paginationEl.appendChild(fragment);
+  }
+
+  // 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
+  // 인포윈도우에 장소명을 표시합니다
+  function displayInfowindow(marker, title) {
+      var content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
+
+      infowindow.setContent(content);
+      infowindow.open(map, marker);
+  }
+
+   // 검색결과 목록의 자식 Element를 제거하는 함수입니다
+  function removeAllChildNods(el) {   
+      while (el.hasChildNodes()) {
+          el.removeChild (el.lastChild);
+      }
+  }
+
+  // 지도를 클릭한 위치에 표출할 마커입니다
+    var marker = new kakao.maps.Marker({ 
+        // 지도 중심좌표에 마커를 생성합니다 
+        position: map.getCenter() 
+    }); 
+    // 지도에 마커를 표시합니다
+    marker.setMap(map);
+
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {        
+      
+      locPosition = mouseEvent.latLng; 
+      
+      conditions(locPosition.getLat(), locPosition.getLng());
+    });
+
 
     function geoLocation(){
 
@@ -52,8 +259,7 @@
             locPosition = new kakao.maps.LatLng(lat, lng);  
           });
 
-        map.panTo(locPosition);
-        condition(lat, lng);
+        conditions(lat, lng);
         
       } else { 
           alert("현재 위치 사용 불가");
@@ -62,7 +268,6 @@
     }
 
     $(".makeMarker .info").click(function(){
-      alert("close");
       $("this").hide();
     });
 
@@ -103,10 +308,13 @@
 
     }
 
-    function condition(lat, lng){
+    
+
+    function conditions(lat, lng){
+      locPosition = new kakao.maps.LatLng(lat, lng);
+      map.panTo(locPosition);
       var small = 0; //반경 1키로 이내
       var large = 0; //반경 5키로 이내
-
       $.get("./file/position.json", function(data){
          $(data.positions).map(function(i, position){
           var dist = distance(lat, lng, position.lat, position.lng);
@@ -117,7 +325,6 @@
               }
             }
          });
-
         var result, message;
         if(small*5 + large*1 < 5){
           result = "GOOD";
@@ -126,13 +333,14 @@
         }else{
           result = "BAD";
         }
-
+        console.log(lat, lng, result, small, large);
         makeMarker(result, small, large);
       });
-
     }
 
+
     function distance(lat1, lng1, lat2, lng2){
+      lat1 = Number(lat1), lng1 = Number(lng1), lat2 = Number(lat2), lng2 = Number(lng2);
       var distLat = 69.1 *(lat2 - lat1);
       var distLng = 53 * (lng2 - lng1);
       var distance = Math.sqrt(distLat*distLat + distLng*distLng);
@@ -197,4 +405,5 @@
 
 
   </script>
+  </body>
 </html>
