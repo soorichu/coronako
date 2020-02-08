@@ -1,6 +1,6 @@
 # 코로나앱
 * https://github.com/soorichu/coronako
-* https://coronapp.herokuapp.com
+* https://coronako.herokuapp.com
 * http://coronapp.site/
 
 ## Using
