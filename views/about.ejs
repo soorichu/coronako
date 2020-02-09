@@ -5,12 +5,19 @@
 </head>
 <body>
 <% include partials/menu %>
+<div class="container-fluid bg-3 text-center"> 
 
-<div class="container-fluid bg-3 text-center">    
   <div class="row">
-    <div class="col-sm-4">
-      <h4>Notice</h4><hr>
-      <p>본 페이지는 </p>
+
+    <div>
+      <h3>Notice</h3><hr>
+      <p>감염증이 의심될 때 <br><a hef="tel:1339"><button class="btn btn-warning"><h1><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;1339</h1></button></a></p>
+      <a id="showPamplet" href="#pamplet"><h4>올바른 손씻기 방법</h4></a><img src="./img/올바른손씻기.jpg" id="pamplet" style="display:none;"></div>
+    </div><br>
+
+    <div>
+      <h3>About Me</h3><hr>
+      <p>본 코로나앱(CORONAPP)은 </p>
       <p>2019 신종 코로나 바이러스 정보 공유를 위해 만들어 졌습니다.</p>
       <p><a href="mailto:soorichu@gmail.com">피드백</a>을 주실 경우 반드시 자료의 출처를 밝혀주시기 바랍니다.</p>
       <p>데이터 및 홈페이지의 모든 것은 자유롭게 사용하실 수 있습니다.</p>
@@ -18,8 +25,9 @@
       <p> Github : <a href="https://github.com/soorichu/coronako">https://github.com/soorichu/coronako</a></p>
       <p>감염증으로 힘든 모든 분들께 응원과 격려를 보냅니다.</p><br>
     </div>
-    <div class="col-sm-4"> 
-      <h4>Info's</h4><hr>
+
+    <div> 
+      <h3>Info's</h3><hr>
       <p><a href="http://coronamap.site">코로나 맵</a></p>
       <p><a href="https://corona-nearby.com/">코로나 알리미</a></p>
       <p><a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">2019-nCoV Global Cases</a></p><br>
@@ -27,22 +35,25 @@
       <p><a id="kbsdb" href="http://dj.kbs.co.kr/resources/2020-02-03">코로나 확진자 조회</a></p>
       <p><a href="http://www.xn--now-po7lf48dlsm0ya109f.kr/infect/occurrence_list.do">해외감염병NOW</a></p><br>
     </div>
-    <div class="col-sm-4"> 
-      <h4>Data</h4><hr>
-      <a href="./file/corona.csv"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; corona.csv</button> </a>
-      <a href="./file/people.csv"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; people.csv</button> </a>
-      <a href="./file/position.csv"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; position.csv</button> </a><br><br>
+
+    <div> 
+      <h3>Data</h3><hr>
+      <a href="./file/corona.csv"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; corona.csv</button> </a><br>
+      <a href="./file/people.csv"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; people.csv</button> </a><br>
+      <a href="./file/position.csv"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; position.csv</button> </a><br>
       <a href="mailto:soorichu@gmail.com"><button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-send"></span>&nbsp; 오류 신고 및 피드백</button></a><br><br>
     </div>
-    <div class="col-sm-4"> 
-      <h4>Thanks!</h4><hr>
+
+    <div> 
+      <h3>Thanks!</h3><hr>
       <p>TEMPLATE : <a href="https://github.com/bhanushalimahesh3/node-website">NodeJS Website</a></p>
       <p>MAP : <a href="http://apis.map.kakao.com/">Kakao Maps API</a></p>
       <p>GRAPH : <a href="https://plot.ly/">Plotly</a></p>
       <p>SERVER : <a href="https://heroku.com">Heroku</a></p><br>
     </div>
+
   </div>
-</div>
+
 </div>
 <% include partials/foot %>
 </body>
@@ -53,7 +64,12 @@
 
     $("#logo").css("display", "inline");
     $("#search").hide();
+
+    $("#showPamplet").click(function(){
+      $("#pamplet").toggle();
+    });
       /*
+    }
     var date = new Date();
     var year = date.getFullYear();
     var month = ("0"+(date.getMonth()+1)).slice(-2);

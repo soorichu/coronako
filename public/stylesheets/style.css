@@ -22,3 +22,24 @@
   .active>a {
     color: #f0ad4e !important;;
   }
+
+p{
+  font-size: 17px;
+}
+
+.btn{
+  margin: 5px;
+}
+
+
+#pamplet {
+     
+    width: 100%;
+         
+    }
+ 
+@media screen and (min-width: 1024px) {
+    #pamplet{
+        width: auto;
+     }
+}
