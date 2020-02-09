@@ -25,7 +25,7 @@
     $("#search").click(function(){
        if($("#searchbar").css("display") == "none"){
         $("#searchbar").slideDown();
-        $("#menu_wrap").fadeIn();
+
       }else{
         $("#searchbar").slideUp();
         $("#menu_wrap").fadeOut();
@@ -59,7 +59,9 @@
     var infowindow = new kakao.maps.InfoWindow({
       map: map,
       position: locPosition,
+      removable : true,
     });
+    infowindow.close();
 
     searchPlaces();
 
@@ -70,7 +72,7 @@
 
     function placesSearchCB(data, status, pagination) {
     if (status === kakao.maps.services.Status.OK) {
-
+        $("#menu_wrap").fadeIn();
         displayPlaces(data);
         displayPagination(pagination);
 
@@ -334,7 +336,7 @@
         }else{
           result = "BAD";
         }
-        console.log(lat, lng, result, small, large);
+        // console.log(lat, lng, result, small, large);
         makeMarker(result, small, large);
       });
     }
@@ -356,6 +358,7 @@
         map: map,
         minLevel: 8,
         calculator: [4, 12],
+        averageCenter: true,
         styles: [{
           width : '50px', height : '50px',
           background: 'rgba(255, 225, 0, .8)',
@@ -389,14 +392,33 @@
     var imageSize = new kakao.maps.Size(50, 55);
     var markerImage = new kakao.maps.MarkerImage(dangerImage, imageSize);
 
+
     $.get("./file/position.json", function(data){
         var dangerMarkers = $(data.positions).map(function(i, position){
-            return new kakao.maps.Marker({
+
+            var marker_danger = new kakao.maps.Marker({
               map: map,
               position : new kakao.maps.LatLng(Number(position.lat), Number(position.lng)),
-              title: position.loc+"\n"+position.date+"에 "+position.person+"번 확진자가 다녀감.",
-              image: markerImage
+              title: position.loc+"\n"+position.date+"에 "+position.person+"번 확진자 동선",
+              image: markerImage,
+              clickable: true,
             });
+
+            // marker_danger.setMap(map);
+            var contents = "<div class='infowindo'><h4>" + position.loc + "</h4><p>"+position.date+"에 "+ position.person+"번 확진자 동선</p></div>";
+            // console.log(contents);
+
+            var infoWindow  = new kakao.maps.InfoWindow({
+              content: contents,
+              removable : true
+            });
+
+            kakao.maps.event.addListener(marker_danger, 'click', function(){
+              infoWindow.open(map, marker_danger);
+            });
+
+            return marker_danger;
+
 
         });
 

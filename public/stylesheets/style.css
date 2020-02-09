@@ -43,3 +43,18 @@ p{
         width: auto;
      }
 }
+
+.infowindo{
+  text-align: center;
+  width:200px;
+}
+
+.infowindo h4{
+  font-size: 15px;
+  color: #a26208;
+  font-weight: bold;
+}
+
+.infowindo p {
+  font-size: 13px;
+}
