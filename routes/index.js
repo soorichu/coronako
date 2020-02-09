@@ -10,8 +10,8 @@ router.get('/about', function(req, res, next) {
   res.render('about', {page:'About', menuId:'about'});
 });
 
-router.get('/graph', function(req, res, next) {
-  res.render('graph', {page:'Graph', menuId:'graph'});
+router.get('/datas', function(req, res, next) {
+  res.render('datas', {page:'Data', menuId:'datas'});
 });
 
 router.get('/test', function(req, res, next){

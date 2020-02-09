@@ -20,7 +20,7 @@
   }
 
   .active>a {
-    color: #f0ad4e !important;;
+    color: #f0ad4e !important;
   }
 
 p{
@@ -28,41 +28,49 @@ p{
 }
 
 .btn{
-  margin: 5px;
+  margin: 10px;
 }
 
 
 #pamplet {
-     
-    width: 100%;
-         
-    }
+    width: 100%;      
+}
+.row{
+  position : relative;
+  margin: 15px;
+}
+
+.card{
+  margin-bottom: 20px;
+}
+
+.card-header{
+  font-size: 17px;
+  color: #f0ad4e !important;
+}
+
+h1.card-text{
+  font-size: 100px;
+}
+
+#coronaTable{
+  position: relative;
+  text-align: center;
+}
  
 @media screen and (min-width: 1024px) {
     #pamplet{
         width: auto;
      }
-}
-
-
-/*#keyword {
-  position: relative;
-  width: 100%;
-}
-
-@media screen and (min-width: 768px) {
-     #keyword{
-      left: 8%;
-      width: 84%;
+     .row{
+      margin: 15px 15% 15px 15%;
+     }
+     .table{
+      margin: 100px;
+      width: 800px;
      }
 }
 
-@media screen and (min-width: 1024px) {
-     #keyword{
-      left: 12%;
-      width: 76%;
-     }
-}*/
 
 .infowindo{
   text-align: center;
@@ -77,4 +85,9 @@ p{
 
 .infowindo p {
   font-size: 13px;
+}
+
+.footer-copyright{
+  background-color: #f9f9f9;
+  padding: 10px 0 10px 0;
 }
