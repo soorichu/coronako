@@ -44,6 +44,26 @@ p{
      }
 }
 
+
+/*#keyword {
+  position: relative;
+  width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+     #keyword{
+      left: 8%;
+      width: 84%;
+     }
+}
+
+@media screen and (min-width: 1024px) {
+     #keyword{
+      left: 12%;
+      width: 76%;
+     }
+}*/
+
 .infowindo{
   text-align: center;
   width:200px;
