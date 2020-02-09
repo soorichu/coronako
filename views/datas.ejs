@@ -32,7 +32,7 @@
 </div>
 </div>
   <hr>
-  <h4 style="text-align: center; margin-top:10px;">코로나 바이러스 <select id="nations" class="btn btn-warning dropdown-toggle"></select> 추이</h4>
+  <h4 style="text-align: center; margin-top:10px;">코로나 바이러스 <select id="nations" class="btn btn-default dropdown-toggle"></select> 추이</h4>
 <div class="container-fluid bg-3 text-center"> 
 <div class="row">
   <div class="col-sm-6">
@@ -124,7 +124,7 @@
         name : colsKor[index] +" 사망자수"
       }];
 
-      Plotly.newPlot("korea", trace, { title : colsKor[index] +" 감염자 및 사망자 그래프", height: $( window ).height()});
+      Plotly.newPlot("korea", trace, { title : colsKor[index] +" 감염자 및 사망자 그래프", height: $( window ).height()*0.75});
     }
 
 
@@ -154,6 +154,7 @@
         // tables += "</tr>";
       }
       // tables += "</tbody>";
+
 
       $("#totalDied").text(row['TotalDied']);
       $("#totalInfected").text(row['Total']);
