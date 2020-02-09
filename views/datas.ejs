@@ -5,6 +5,7 @@
 </head>
 <body>
 <% include partials/menu %>
+  <h4 style="text-align: center;margin:30px;"> 최근 업데이트 : <span class="lastupdate"></span/></h4>
 <div class="container-fluid bg-3 text-center"> 
 
 <div class="row">
@@ -29,32 +30,34 @@
     </div>
   </div>
 </div>
+</div>
+  <hr>
+  <h4 style="text-align: center; margin-top:10px;">코로나 바이러스 <select id="nations" class="btn btn-warning dropdown-toggle"></select> 추이</h4>
+<div class="container-fluid bg-3 text-center"> 
 <div class="row">
   <div class="col-sm-6">
     <div class="card">
       <div class="card-header">
-        한국 감염자수
+        <span class="nation">한국</span> 감염자수
       </div>
       <div class="card-body">
-        <h1 class="card-text"  id="koreaInfected"></h1>
+        <h1 class="card-text"  id="nationInfected"></h1>
       </div>
     </div>
   </div>
   <div class="col-sm-6">
     <div class="card">
       <div class="card-header">
-        한국 사망자수
+        <span class="nation">한국</span> 사망자수
       </div>
       <div class="card-body">
-        <h1 class="card-text"  id="koreaDied">0</h1>
+        <h1 class="card-text"  id="nationDied">0</h1>
       </div>
     </div>
   </div>
 </div>
 </div>
-  <h4 style="text-align: center;margin:30px;"> 최근 업데이트 : <span class="lastupdate"></span/></h4>
-  <hr>
-  <h4 style="text-align: center; margin-top:10px;">코로나 바이러스 <select id="nations" class="btn btn-warning dropdown-toggle"></select> 추이</h4>
+</div>
   <div id="korea" style="width:100%;"></div>
   <hr>
   <div id="world" style="width:100%;"></div>
@@ -74,8 +77,9 @@
     $(".lastupdate").text($("#update").text());
 
     var date = [];
+    var latestdata = [];
     var colsEng = [
-                   'Died', 'Infected', 'China', 'Korea',
+                   'Total', 'China', 'Korea',
                    'HongKong', 'Taiwan', 'Macau', 'Thiland',
                    'Singapore', 'Japan', 'Vietnam', 'Nepal',
                    'Malaysia', 'Cambodia', 'SirLangKa', 'UAE',
@@ -85,7 +89,7 @@
                    'Belgium', 'Australia'
                   ];
     var colsKor = [
-                   '총 사망자수', '총 감염자수', '중국', '한국',
+                   '총', '중국', '한국',
                    '홍콩', '태국', '마카오', '대만',
                    '싱가포르', '일본', '베트남', '네팔',
                    '말레이시아', '캄보디아', '스리랑카', '아랍에미리트',
@@ -96,21 +100,31 @@
                   ];
 
     var data = new Array(colsEng.length);
+    var dataDied = new Array(colsEng.length);
 
     Plotly.d3.csv("./file/corona.csv", function(data){ processData(data) });
 
 
     function nationData(nation){
       var index = colsEng.indexOf(nation);
-
+      $(".nation").text(colsKor[index]);
+      var len = data[index].length;
+      $("#nationInfected").text(data[index][len-1]);
+      $("#nationDied").text(dataDied[index][len-1]);
       var trace = [{
         type : 'bar',
         x : date,
         y : data[index],
-        name : colsKor[index]
+        name : colsKor[index] +" 감염자수"
+      },
+      {
+        type : 'bar',
+        x : date,
+        y : dataDied[index],
+        name : colsKor[index] +" 사망자수"
       }];
 
-      Plotly.newPlot("korea", trace, {});
+      Plotly.newPlot("korea", trace, { title : colsKor[index] +" 감염자 및 사망자 그래프", height: $( window ).height()});
     }
 
 
@@ -118,7 +132,6 @@
 
       var len = allRows.length;
       var options = "";
-      var latestdata = [];
       var traceAll = [];
       // var tables = "<thead><tr><th>날짜</th>";
 
@@ -130,29 +143,25 @@
 
       for (var i=0; i<allRows.length; i++){
         row = allRows[i];
-        date.push(row['Date']);
+        date.push(row['Date']); 
         // tables += "<tr><th>"+ row['Date'] +"</th>";
         for(var j=0; j<colsEng.length;j++){
-          if(data[j] == null){ data[j] = []; }
+          if(data[j] == null){ data[j] = []; dataDied[j] = [];}
           data[j].push(row[colsEng[j]]);
+          dataDied[j].push(row[colsEng[j]+"Died"]);
           // tables += "<td>"+ row[colsEng[j]] + "</td>";
         }
         // tables += "</tr>";
       }
       // tables += "</tbody>";
 
-      $("#totalDied").text(row['Died']);
-      $("#totalInfected").text(row['Infected']);
-      $("#koreaInfected").text(row['Korea']);
+      $("#totalDied").text(row['TotalDied']);
+      $("#totalInfected").text(row['Total']);
+      $("#nationDied").text(row['koreaDied']);
+      $("#nationInfected").text(row['Korea']);
 
       for(var j=0; j<colsEng.length; j++){
-        latestdata.push({"num": j, "name": colsKor[j], "infected": Number(row[colsEng[j]])});
-        if(colsEng[j]==='Korea'){
-            options += "<option value='"+colsEng[j]+"' selected>"+colsKor[j]+"</option>";
-        }else{
-            options += "<option value='"+colsEng[j]+"'>"+colsKor[j]+"</option>";
-        }
-
+        latestdata.push({"num": j, "name": colsKor[j], "infected": Number(row[colsEng[j]]), "died":Number(row[colsEng[j]+"Died"])});
       }
 
       latestdata.sort(function(a, b){
@@ -162,10 +171,15 @@
       // var tables = "<table class='table table-striped'><thead><tr><th>국가</th><th>감염자수</th></tr></thead><tbody>";
 
       for(var i=0; i<colsEng.length; i++){
+        if(colsEng[i]==='Korea'){
+            options += "<option value='"+colsEng[i]+"' selected>"+colsKor[i]+"</option>";
+        }else{
+            options += "<option value='"+colsEng[i]+"'>"+colsKor[i]+"</option>";
+        }
         traceAll.push({
           x : date, 
           y : data[latestdata[i]["num"]],
-          name : latestdata[i]["name"]
+          name : latestdata[i]["name"] + "("+latestdata[i]["infected"]+")"
         });
         // tables += "<tr><th>"+ latestdata[i].name+"</th><td>"+latestdata[i].infected+"</td></tr>";
       }
@@ -173,7 +187,7 @@
       // tables += "</tbody></table>";
 
       $("#nations").html(options);
-      Plotly.newPlot("world", traceAll, {title:'코로나 바이러스 전세계 추이', height: $( window ).height()});
+      Plotly.newPlot("world", traceAll, {title:'전세계 감염자 그래프', height: $( window ).height()});
 
       nationData('Korea');
       $("#nations").change(function(){
