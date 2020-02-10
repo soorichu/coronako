@@ -5,7 +5,7 @@
 </head>
 <body>
 <% include partials/menu %>
-  <h4 style="text-align: center;margin:30px;"> 최근 업데이트 : <span class="lastupdate"></span/></h4>
+  <h4 style="text-align: center;margin:30px;"> 2020-02-10 09:00 기준 </h4>
 <div class="container-fluid bg-3 text-center"> 
 
 <div class="row">
@@ -16,6 +16,7 @@
       </div>
       <div class="card-body">
         <h1 class="card-text" id="totalInfected"></h1>
+        <span class="gap">(<span id="totalInfectedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
       </div>
     </div>
   </div>
@@ -26,6 +27,7 @@
       </div>
       <div class="card-body">
         <h1 class="card-text" id="totalDied"></h1>
+        <span class="gap">(<span id="totalDiedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
       </div>
     </div>
   </div>
@@ -42,6 +44,7 @@
       </div>
       <div class="card-body">
         <h1 class="card-text"  id="nationInfected"></h1>
+        <span class="gap">(<span id="nationInfectedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
       </div>
     </div>
   </div>
@@ -52,6 +55,7 @@
       </div>
       <div class="card-body">
         <h1 class="card-text"  id="nationDied">0</h1>
+        <span class="gap">(<span id="nationDiedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
       </div>
     </div>
   </div>
@@ -74,7 +78,7 @@
 
     $("#logo").css("display", "inline");
     $("#search").hide();
-    $(".lastupdate").text($("#update").text());
+    // $(".lastupdate").text($("#update").text());
 
     var date = [];
     var latestdata = [];
@@ -99,8 +103,10 @@
                    '벨기에', '호주'
                   ];
 
+    var len = colsEng.length;
     var data = new Array(colsEng.length);
     var dataDied = new Array(colsEng.length);
+    var dataGap;
 
     Plotly.d3.csv("./file/corona.csv", function(data){ processData(data) });
 
@@ -111,6 +117,8 @@
       var len = data[index].length;
       $("#nationInfected").text(data[index][len-1]);
       $("#nationDied").text(dataDied[index][len-1]);
+      $("#nationInfectedGap").text(dataGap[nation]);
+      $("#nationDiedGap").text(dataGap[nation+"Died"]);
       var trace = [{
         type : 'bar',
         x : date,
@@ -130,9 +138,10 @@
 
     function processData(allRows){
 
-      var len = allRows.length;
+      var lastindex = allRows.length-1;
       var options = "";
       var traceAll = [];
+
       // var tables = "<thead><tr><th>날짜</th>";
 
       // for(var i=0; i<colsEng.length;i++){
@@ -140,29 +149,39 @@
       // }
 
       // tables += "</tr></thead><tbody>";
-
-      for (var i=0; i<allRows.length; i++){
+      for (var i=0; i<=lastindex; i++){
+        if(i == lastindex) dataGap = row;
         row = allRows[i];
         date.push(row['Date']); 
         // tables += "<tr><th>"+ row['Date'] +"</th>";
-        for(var j=0; j<colsEng.length;j++){
+        for(var j=0; j<len;j++){
           if(data[j] == null){ data[j] = []; dataDied[j] = [];}
-          data[j].push(row[colsEng[j]]);
-          dataDied[j].push(row[colsEng[j]+"Died"]);
+          data[j].push(row[colsEng[j]]);  //j번째 국가의 감염자수의 i번째 데이터
+          dataDied[j].push(row[colsEng[j]+"Died"]);  //j번째 국가의 사망자수의 i번째 데이터
           // tables += "<td>"+ row[colsEng[j]] + "</td>";
+          if(i == lastindex) {
+            dataGap[colsEng[j]] = row[colsEng[j]] - dataGap[colsEng[j]];
+            dataGap[colsEng[j]+"Died"] = row[colsEng[j]+"Died"] - dataGap[colsEng[j]+"Died"];
+          }
         }
         // tables += "</tr>";
       }
-      // tables += "</tbody>";
-
 
       $("#totalDied").text(row['TotalDied']);
       $("#totalInfected").text(row['Total']);
       $("#nationDied").text(row['koreaDied']);
       $("#nationInfected").text(row['Korea']);
+      $("#totalDiedGap").text(dataGap['TotalDied']);
+      $("#totalInfectedGap").text(dataGap['Total']);
+      $("#nationDiedGap").text(dataGap['koreaDied']);
+      $("#nationInfectedGap").text(dataGap['Korea']);
 
-      for(var j=0; j<colsEng.length; j++){
-        latestdata.push({"num": j, "name": colsKor[j], "infected": Number(row[colsEng[j]]), "died":Number(row[colsEng[j]+"Died"])});
+      console.log(dataGap);
+
+      for(var j=0; j<len; j++){
+        latestdata.push({"num": j, "name": colsKor[j], 
+          "infected": Number(data[j][lastindex]), 
+          "died": Number(dataDied[j][lastindex])});
       }
 
       latestdata.sort(function(a, b){
@@ -171,7 +190,7 @@
 
       // var tables = "<table class='table table-striped'><thead><tr><th>국가</th><th>감염자수</th></tr></thead><tbody>";
 
-      for(var i=0; i<colsEng.length; i++){
+      for(var i=0; i<len; i++){
         if(colsEng[i]==='Korea'){
             options += "<option value='"+colsEng[i]+"' selected>"+colsKor[i]+"</option>";
         }else{

@@ -95,3 +95,8 @@ h1.card-text{
 .container-fluid {
     padding: 30px 0px 20px 0px;
 }
+
+.gap {
+  color : red;
+  font-size: 15px;
+}
