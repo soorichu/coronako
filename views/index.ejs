@@ -13,30 +13,37 @@
         <div id="pagination"></div>
     </div>
 <img id="thispot" src="./img/thispot.png" onclick="geoLocation()"/>
-<img id="sickperson" src="./img/sickperson.png" style="display:none"/>
+<!-- <img id="sickperson" src="./img/sickperson.png"/> -->
 
 <% include partials/foot %>
   <% include partials/script %>
   <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d8b15cafc174093e55e3a668723818fb&libraries=clusterer,services"></script>
   <script>
+
     $("#logo").hide();
     $("#search").css("display", "inline");
     $("#search").click(function(){
        if($("#searchbar").css("display") == "none"){
         $("#searchbar").slideDown();
         $("#keyword").focus();
-        // if($("#keyword").val()!=""){
-        //   $("#menu_wrap").fadeIn();
-        // }
+        if($("#keyword").val()!=""){
+          $("#menu_wrap").fadeIn();
+        }
       }else{
         $("#searchbar").slideUp();
         $("#menu_wrap").fadeOut();
-        removeMarker();
+        // removeMarker();
       }
     });
     $(document).keydown(function(event){
       if($("#searchbar").css("display")!="none" && event.keyCode=='13'){
-        searchPlaces();
+        var keyword = $("#keyword").val();
+        if(keyword.indexOf("확진자")>-1 || keyword.indexOf("감염자")>-1){
+          searchPerson(keyword.replace(/[^0-9]/g,""));
+        }else{
+          searchPlaces();
+        }
+        
       }
     });
     var lat = 37.555800, lng = 126.969732;  //기본 위도 경도 : 서울역
@@ -77,6 +84,84 @@
         return;
     }
   }
+
+  function searchPerson(id){
+    $("#menu_wrap").fadeIn();
+    $.get("./file/position.json", function(data){
+      var personData = $(data.positions).map(function(i, position){
+        if(Number(position.person)==id){
+          return {
+            // title : position.date + " " + position.time +"\n" + position.loc,
+            datetime : position.date + " " + position.time,
+            location : position.loc,
+            position : new kakao.maps.LatLng(Number(position.lat), Number(position.lng))
+          };
+        }
+      });
+      if(personData.length > 0){
+        displayPerson(personData);
+      }else{
+        alert("확진자가 존재하지 않습니다.");
+        $("#menu_wrap").hide();
+        return;
+      }
+      
+    });
+  }
+
+  function displayPerson(person){
+      var listEl = document.getElementById('placesList'), 
+      menuEl = document.getElementById('menu_wrap'),
+      fragment = document.createDocumentFragment(), 
+      bounds = new kakao.maps.LatLngBounds(), 
+      listStr = '';
+      // var level = map.getLevel();
+
+      removeAllChildNods(listEl);
+      removeMarker();
+
+      var linePath = [];
+      for(var i=0; i<person.length; i++){
+        var itemEl = getListPersonItem(i, person[i]);
+        // var marker = addMarker(person[i], i, person[i].title);
+        linePath.push(person[i].position);
+        (function(position){
+          // bounds.extend(person[i].position);
+
+          itemEl.onmouseover =  function () {
+            // map.setLevel(level);
+            map.panTo(position);
+          };
+          itemEl.onclick = function(){
+            // map.setLevel(level);
+            map.panTo(position);
+          };
+
+        })(person[i].position)
+
+        fragment.appendChild(itemEl);
+      }
+      listEl.appendChild(fragment);
+      menuEl.scrollTop = 0;
+      // map.setBounds(bounds);
+      // level = map.getLevel();
+      
+      var polyline = new kakao.maps.Polyline({
+        path: linePath, 
+        strokeWeight: 5, 
+        strokeColor: 'red', 
+        strokeOpacity: 0.7, 
+        strokeStyle: 'solid' 
+      });
+
+      polyline.setMap(map);
+
+      $("#search").click(function(){
+          polyline.setMap(null); 
+      });
+  }
+
+
   function displayPlaces(places) {
       var listEl = document.getElementById('placesList'), 
       menuEl = document.getElementById('menu_wrap'),
@@ -90,7 +175,7 @@
       
       for ( var i=0; i<places.length; i++ ) {
           var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
-              marker = addMarker(placePosition, i), 
+              marker = addMarker(placePosition, i, places[i].title), 
               itemEl = getListItem(i, places[i]);
           bounds.extend(placePosition);
           (function(marker, title, placePosition) {
@@ -113,7 +198,7 @@
               itemEl.onclick = function(){
                 $("#searchbar").css("display", "none");
                 $("#menu_wrap").css("display", "none");
-                removeMarker();
+                // removeMarker();
                 conditions(placePosition.getLat(), placePosition.getLng());
               };
           })(marker, places[i].place_name, placePosition);
@@ -124,7 +209,18 @@
       map.setBounds(bounds);
       level = map.getLevel();
   }
-  // 검색결과 항목을 Element로 반환하는 함수입니다
+  
+  function getListPersonItem(index, person){
+    var el = document.createElement('li');
+    var itemStr = '<div class="info">' +
+                  '   <h5>' + person.datetime + '</h5>'+
+                  '   <h4>' + person.location +'</h4>';
+    el.innerHTML = itemStr;
+    el.className = 'item';
+    return el;
+
+  }
+
   function getListItem(index, places) {
       var el = document.createElement('li'),
       itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>' +
@@ -355,6 +451,8 @@
         });
         clusterer.addMarkers(dangerMarkers);
     });
+
+
   </script>
   </body>
 </html>
