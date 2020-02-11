@@ -23,10 +23,11 @@
     $("#search").click(function(){
        if($("#searchbar").css("display") == "none"){
         $("#searchbar").slideDown();
+        $("#searchbar input").focus();
       }else{
         $("#searchbar").slideUp();
         $("#menu_wrap").fadeOut();
-        removeMarker();
+        // removeMarker();
       }
     });
     $(document).keydown(function(event){
@@ -54,7 +55,7 @@
       removable : true,
     });
     infowindow.close();
-    searchPlaces();
+
     function searchPlaces(){
       var keyword = $("#keyword").val();
       ps.keywordSearch(keyword, placesSearchCB);
@@ -78,6 +79,7 @@
       fragment = document.createDocumentFragment(), 
       bounds = new kakao.maps.LatLngBounds(), 
       listStr = '';
+      var level = map.getLevel();
       
       removeAllChildNods(listEl);
       removeMarker();
@@ -87,14 +89,19 @@
               marker = addMarker(placePosition, i), 
               itemEl = getListItem(i, places[i]);
           bounds.extend(placePosition);
-          (function(marker, title) {
+          (function(marker, title, placePosition) {
               kakao.maps.event.addListener(marker, 'mouseover', function() {
                   displayInfowindow(marker, title);
               });
               kakao.maps.event.addListener(marker, 'mouseout', function() {
                   infowindow.close();
               });
+              kakao.maps.event.addListener(marker, 'click', function() {
+                  displayInfowindow(marker, title);
+              });
               itemEl.onmouseover =  function () {
+                  map.setLevel(level);
+      
                   displayInfowindow(marker, title);
               };
               itemEl.onmouseout =  function () {
@@ -103,14 +110,13 @@
               itemEl.onclick = function(){
                 conditions(placePosition.getLat(), placePosition.getLng());
               };
-          })(marker, places[i].place_name);
+          })(marker, places[i].place_name, placePosition);
           fragment.appendChild(itemEl);
       }
-      // 검색결과 항목들을 검색결과 목록 Elemnet에 추가합니다
       listEl.appendChild(fragment);
       menuEl.scrollTop = 0;
-      // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
       map.setBounds(bounds);
+      level = map.getLevel();
   }
   // 검색결과 항목을 Element로 반환하는 함수입니다
   function getListItem(index, places) {
@@ -211,7 +217,10 @@
     $(".makeMarker .info").click(function(){
       $("this").hide();
     });
-    function makeMarker(result, small, large){
+    function makeMarker(result, small, large, tempPosition){
+      map.setLevel(7);
+      map.panTo(tempPosition);
+
       content = '<div class="wrap makeMarker">' + 
                 '    <div class="info">' + 
                 '        <div class="title">' + result +
@@ -229,14 +238,14 @@
                 '</div>';
         var marker = new kakao.maps.Marker({
           map: map,
-          position: locPosition,
-          center : locPosition,
+          position: tempPosition,
+          center : tempPosition,
           clickable: true
         });
         var overlay = new kakao.maps.CustomOverlay({
             content: content,
             map: map,
-            position: locPosition,
+            position: tempPosition,
             clickable: true,
             removable: true
         });
@@ -246,8 +255,7 @@
     }
     
     function conditions(lat, lng){
-      locPosition = new kakao.maps.LatLng(lat, lng);
-      map.panTo(locPosition);
+      var tempPosition = new kakao.maps.LatLng(lat, lng);
       var small = 0; //반경 1키로 이내
       var large = 0; //반경 5키로 이내
       $.get("./file/position.json", function(data){
@@ -269,7 +277,7 @@
           result = "BAD";
         }
         // console.log(lat, lng, result, small, large);
-        makeMarker(result, small, large);
+        makeMarker(result, small, large, tempPosition);
       });
     }
     function distance(lat1, lng1, lat2, lng2){
@@ -322,12 +330,12 @@
             var marker_danger = new kakao.maps.Marker({
               map: map,
               position : new kakao.maps.LatLng(Number(position.lat), Number(position.lng)),
-              title: position.loc+"\n"+position.date+"에 "+position.person+"번 확진자 동선",
+              title: position.loc+"\n"+position.date+" "+ position.time + "에 " +position.person+"번 확진자",
               image: markerImage,
               clickable: true,
             });
             // marker_danger.setMap(map);
-            var contents = "<div class='infowindo'><h4>" + position.loc + "</h4><p>"+position.date+"에 "+ position.person+"번 확진자 동선</p></div>";
+            var contents = "<div class='infowindo'><h4>" + position.loc + "</h4><p>"+position.date+" "+ position.time + "에 "+ position.person+"번 확진자</p></div>";
             // console.log(contents);
             var infoWindow  = new kakao.maps.InfoWindow({
               content: contents,
