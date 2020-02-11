@@ -16,7 +16,7 @@
       </div>
       <div class="card-body">
         <h1 class="card-text" id="totalInfected"></h1>
-        <span class="gap">(<span id="totalInfectedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
+        <span class="red">(<span id="totalInfectedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
       </div>
     </div>
   </div>
@@ -27,7 +27,7 @@
       </div>
       <div class="card-body">
         <h1 class="card-text" id="totalDied"></h1>
-        <span class="gap">(<span id="totalDiedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
+        <span class="red">(<span id="totalDiedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
       </div>
     </div>
   </div>
@@ -44,7 +44,7 @@
       </div>
       <div class="card-body">
         <h1 class="card-text"  id="nationInfected"></h1>
-        <span class="gap">(<span id="nationInfectedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
+        <span class="red">(<span id="nationInfectedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
       </div>
     </div>
   </div>
@@ -55,7 +55,7 @@
       </div>
       <div class="card-body">
         <h1 class="card-text"  id="nationDied">0</h1>
-        <span class="gap">(<span id="nationDiedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
+        <span class="red">(<span id="nationDiedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
       </div>
     </div>
   </div>
@@ -65,7 +65,6 @@
   <div id="korea" style="width:100%;"></div>
   <hr>
   <div id="world" style="width:100%;"></div>
-  <hr>
   <!-- <h4 style="text-align: center; margin-top:10px;">
     코로나 바이러스 전세계 테이블
   </h4>
@@ -110,6 +109,17 @@
 
     Plotly.d3.csv("./file/corona.csv", function(data){ processData(data) });
 
+    function changeGap(e, d){
+      if(d==0){
+        $(e).parent().removeClass().addClass("green");
+        $(e).next().removeClass().addClass("glyphicon glyphicon-minus-sign");
+      }else{
+        $(e).parent().removeClass().addClass("red");
+        $(e).next().removeClass().addClass("glyphicon glyphicon-circle-arrow-up");
+      }
+      $(e).text(d);
+    }
+
 
     function nationData(nation){
       var index = colsEng.indexOf(nation);
@@ -117,8 +127,10 @@
       var len = data[index].length;
       $("#nationInfected").text(data[index][len-1]);
       $("#nationDied").text(dataDied[index][len-1]);
-      $("#nationInfectedGap").text(dataGap[nation]);
-      $("#nationDiedGap").text(dataGap[nation+"Died"]);
+      // $("#nationInfectedGap").text(dataGap[nation]);
+      // $("#nationDiedGap").text(dataGap[nation+"Died"]);
+      changeGap("#nationInfectedGap", dataGap[nation]);
+      changeGap("#nationDiedGap", dataGap[nation+"Died"]);
       var trace = [{
         type : 'bar',
         x : date,
@@ -171,12 +183,18 @@
       $("#totalInfected").text(row['Total']);
       $("#nationDied").text(row['koreaDied']);
       $("#nationInfected").text(row['Korea']);
-      $("#totalDiedGap").text(dataGap['TotalDied']);
-      $("#totalInfectedGap").text(dataGap['Total']);
-      $("#nationDiedGap").text(dataGap['koreaDied']);
-      $("#nationInfectedGap").text(dataGap['Korea']);
+      // $("#totalDiedGap").text(dataGap['TotalDied']);
+      // $("#totalInfectedGap").text(dataGap['Total']);
+      // $("#nationDiedGap").text(dataGap['KoreaDied']);
+      // $("#nationInfectedGap").text(dataGap['Korea']);
 
-      console.log(dataGap);
+      changeGap("#totalDiedGap", dataGap['TotalDied']);
+      changeGap("#totalInfectedGap", dataGap['Total']);
+      changeGap("#nationDiedGap", dataGap['koreaDied']);
+      changeGap("#nationInfectedGap", dataGap['Korea']);
+
+
+      // console.log(dataGap);
 
       for(var j=0; j<len; j++){
         latestdata.push({"num": j, "name": colsKor[j], 

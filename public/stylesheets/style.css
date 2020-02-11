@@ -96,7 +96,12 @@ h1.card-text{
     padding: 30px 0px 20px 0px;
 }
 
-.gap {
+.red {
   color : red;
+  font-size: 15px;
+}
+
+.green{
+  color : green;
   font-size: 15px;
 }
