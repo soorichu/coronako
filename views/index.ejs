@@ -13,6 +13,7 @@
         <div id="pagination"></div>
     </div>
 <img id="thispot" src="./img/thispot.png" onclick="geoLocation()"/>
+<img id="sickperson" src="./img/sickperson.png" style="display:none"/>
 
 <% include partials/foot %>
   <% include partials/script %>
@@ -24,13 +25,13 @@
        if($("#searchbar").css("display") == "none"){
         $("#searchbar").slideDown();
         $("#keyword").focus();
-        if($("#keyword").val()!=""){
-          $("#menu_wrap").fadeIn();
-        }
+        // if($("#keyword").val()!=""){
+        //   $("#menu_wrap").fadeIn();
+        // }
       }else{
         $("#searchbar").slideUp();
         $("#menu_wrap").fadeOut();
-        // removeMarker();
+        removeMarker();
       }
     });
     $(document).keydown(function(event){
@@ -112,6 +113,7 @@
               itemEl.onclick = function(){
                 $("#searchbar").css("display", "none");
                 $("#menu_wrap").css("display", "none");
+                removeMarker();
                 conditions(placePosition.getLat(), placePosition.getLng());
               };
           })(marker, places[i].place_name, placePosition);
