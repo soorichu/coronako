@@ -23,7 +23,10 @@
     $("#search").click(function(){
        if($("#searchbar").css("display") == "none"){
         $("#searchbar").slideDown();
-        $("#searchbar input").focus();
+        $("#keyword").focus();
+        if($("#keyword").val()!=""){
+          $("#menu_wrap").fadeIn();
+        }
       }else{
         $("#searchbar").slideUp();
         $("#menu_wrap").fadeOut();
@@ -101,13 +104,14 @@
               });
               itemEl.onmouseover =  function () {
                   map.setLevel(level);
-      
                   displayInfowindow(marker, title);
               };
               itemEl.onmouseout =  function () {
                   infowindow.close();
               };
               itemEl.onclick = function(){
+                $("#searchbar").css("display", "none");
+                $("#menu_wrap").css("display", "none");
                 conditions(placePosition.getLat(), placePosition.getLng());
               };
           })(marker, places[i].place_name, placePosition);
