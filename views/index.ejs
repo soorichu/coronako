@@ -212,9 +212,10 @@
   
   function getListPersonItem(index, person){
     var el = document.createElement('li');
-    var itemStr = '<div class="info">' +
+    var itemStr = '<span><img src="./img/sickperson.png" class="markerbgimg"></img></span>' +
+                  '<div class="info">' +
                   '   <h5>' + person.datetime + '</h5>'+
-                  '   <h4>' + person.location +'</h4>';
+                  '   <h4>' + person.location +'</h4></div>';
     el.innerHTML = itemStr;
     el.className = 'item';
     return el;
@@ -229,7 +230,7 @@
       if (places.road_address_name) {
           itemStr += '    <span>' + places.road_address_name + '</span>';
       } else {
-          itemStr += '    <span>' +  places.address_name  + '</span>'; 
+          itemStr += '    <span>' +  places.address_name  + '</span></div>'; 
       }
       el.innerHTML = itemStr;
       el.className = 'item';
