@@ -59,3 +59,7 @@
 #pagination a {display:inline-block;margin-right:10px;}
 #pagination .on {font-weight: bold; cursor: default;color:#777;}
 .personId { font-size: 9px; }
+
+.modalimg{ text-align: center; }
+.modaldiv{ text-align: center; }
+.modaldiv div {text-align: left; margin: 5px; font-size: 15px;}

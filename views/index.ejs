@@ -213,7 +213,7 @@
   
   function getListPersonItem(index, person){
     var el = document.createElement('li');
-    var itemStr = '<span><img src="./img/sickperson.png" class="markerbgimg"></img><div class="personId">'+ (person.id)+"번 확진자 "+ (index+1) + 
+    var itemStr = '<span><a data-toggle="modal" data-target="#personModalCenter'+person.id+'"><img src="./img/sickperson.png" class="markerbgimg"></img><div>'+ (person.id)+"번 확진자 </a> "+ (index+1) + 
                 ' STEP</div></span>' +
                   '<div class="info">' +
                   '   <div>' + person.datetime + '</div>'+
@@ -440,7 +440,7 @@
               clickable: true,
             });
             // marker_danger.setMap(map);
-            var contents = "<div class='infowindo'><h4>" + position.loc + "</h4><p>"+position.date+" "+ position.time + "에 "+ position.person+"번 확진자</p></div>";
+            var contents = "<div class='infowindo'><h4>" + position.loc + "</h4><p>"+position.date+" "+ position.time + "에 <a data-toggle='modal' data-target='#personModalCenter"+position.person+"'>"+ position.person+"번 확진자</a></p></div>";
             // console.log(contents);
             var infoWindow  = new kakao.maps.InfoWindow({
               content: contents,
@@ -453,6 +453,46 @@
             return marker_danger;
         });
         clusterer.addMarkers(dangerMarkers);
+    });
+
+    $.get("./file/people.json", function(data){
+      $(data.people).map(function(i, person){
+        var modal = '<div class="modal fade" id="personModalCenter'+ person.person +'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">' +
+          '<div class="modal-dialog modal-dialog-centered" role="document">' +
+            '<div class="modal-content">' +
+              '<div class="modal-header">' +
+                '<h4 class="modal-title" id="exampleModalLongTitle">'+person.person+'번 확진자</h4>' +
+                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+                  '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+              '</div>'+
+              '<div class="modal-body">'+
+                '<div class="row">'+
+                  '<div class="col-2 col-sm-4">'+
+                    '<div class="modalimg">'+
+                      '<img src="./img/sickperson.png">'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="col-4 col-sm-6">'+
+                    '<div class="modaldiv">'+
+                      '<div>'+person.age+'세 '+person.sex +'</div>'+
+                      '<div>'+ person.date +'확진</div>'+
+                      '<div>'+person.step+'차 감염자로 현재 '+person.hospital+'에서 '+person.state+'</div>'+
+                      '<div>'+ person.etc +'</div>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+              '<div class="modal-footer">'+
+                '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>';
+
+        $("body").append(modal);
+
+      }); 
     });
 
 
