@@ -92,6 +92,7 @@
         if(Number(position.person)==id){
           return {
             // title : position.date + " " + position.time +"\n" + position.loc,
+            id : id,
             datetime : position.date + " " + position.time,
             location : position.loc,
             position : new kakao.maps.LatLng(Number(position.lat), Number(position.lng))
@@ -212,10 +213,11 @@
   
   function getListPersonItem(index, person){
     var el = document.createElement('li');
-    var itemStr = '<span><img src="./img/sickperson.png" class="markerbgimg"></img></span>' +
+    var itemStr = '<span><img src="./img/sickperson.png" class="markerbgimg"></img><div class="personId">'+ (person.id)+"번 확진자 "+ (index+1) + 
+                ' STEP</div></span>' +
                   '<div class="info">' +
-                  '   <h5>' + person.datetime + '</h5>'+
-                  '   <h4>' + person.location +'</h4></div>';
+                  '   <div>' + person.datetime + '</div>'+
+                  '   <h5>' + person.location +'</h5></div>';
     el.innerHTML = itemStr;
     el.className = 'item';
     return el;
