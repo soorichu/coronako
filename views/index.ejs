@@ -463,28 +463,18 @@
           '<div class="modal-dialog modal-dialog-centered" role="document">' +
             '<div class="modal-content">' +
               '<div class="modal-header">' +
-                '<h4 class="modal-title" id="exampleModalLongTitle">'+person.person+'번 확진자</h4>' +
+                '<h4 class="modal-title" id="exampleModalLongTitle"><img src="./img/sickperson.png"> '+person.person+'번 확진자 <a onclick="searchPerson('+ person.person +')"  data-dismiss="modal"> ▶ 동선</a></h4>' +
                 '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
-                  '<span aria-hidden="true">&times;</span>'+
                 '</button>'+
               '</div>'+
               '<div class="modal-body">'+
-                '<div class="row">'+
-                  '<div class="col-2 col-sm-4">'+
-                    '<div class="modalimg">'+
-                      '<img src="./img/sickperson.png">'+
-                    '</div>'+
-                  '</div>'+
-                  '<div class="col-4 col-sm-6">'+
                     '<div class="modaldiv">'+
-                      '<div>'+person.age+'세 '+person.sex +'</div>'+
+                      '<div>'+person.age+'세 '+person.country + " " + person.sex +'</div>'+
                       '<div>'+ person.date +'에 확진</div>'+
                       '<div>'+person.step+'차 감염자로 현재 '+person.hospital+'에서 '+person.state+'</div>'+
+                      '<hr>'+
                       '<div>'+ person.etc +'</div>'+
-                      '<a onclick="searchPerson('+ person.person +')"  data-dismiss="modal"> ▶ 확진자 동선 바로보기</a>'+
                     '</div>'+
-                  '</div>'+
-                '</div>'+
               '</div>'+
               '<div class="modal-footer">'+
                 '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>'+

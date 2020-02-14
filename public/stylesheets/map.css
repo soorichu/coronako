@@ -60,6 +60,7 @@
 #pagination .on {font-weight: bold; cursor: default;color:#777;}
 .personId { font-size: 9px; }
 
-.modalimg{ text-align: center; }
-.modaldiv{ text-align: center; }
-.modaldiv div {text-align: left; margin: 5px; font-size: 16px;}
+#exampleModalLongTitle img{ width : 33px; }
+.modaldiv div {text-align: left; margin: 5px; font-size: 15px;}
+.modal-content {max-width: 500px;}
+.modal-footer {padding:5px;}
