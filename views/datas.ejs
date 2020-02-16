@@ -7,7 +7,7 @@
 <% include partials/menu %>
   <h4 style="text-align: center;margin:30px;"> 2020-02-15 09:00 해외감염병NOW 기준</h4>
 <div class="container-fluid bg-3 text-center"> 
-
+<div id="worldView"></div>
 <div class="row">
   <div class="col-sm-6">
     <div class="card">
@@ -88,7 +88,6 @@
     // $(".lastupdate").text($("#update").text());
 
     var date = [];
-    var latestdata = [];
     var colsEng = [
                    'Total', 'China', 'OutsideChina', 'Korea',
                    'HongKong', 'Taiwan', 'Macao', 'Thiland',
@@ -111,9 +110,40 @@
                   ];
 
     var len = colsEng.length;
-    var data = new Array(colsEng.length);
-    var dataDied = new Array(colsEng.length);
+    var data = new Array(len);
+    var dataDied = new Array(len);
     var dataGap;
+    var latestdata = [];
+
+    Plotly.d3.csv('./file/coronalatest.csv', function(err, rows){
+      function unpack(rows, key) {
+          return rows.map(function(row) { return row[key]; });
+      }
+
+    var dataWorld = [{
+        type: 'choropleth',
+        locationmode: 'country names',
+        locations: unpack(rows, 'Country'),
+        z: unpack(rows, 'Data'),
+        text: unpack(rows, '국가'),
+        autocolorscale: true,
+    }];
+
+    var layout = {
+      width: $( window ).width(),
+      height: $( window ).height(),
+      title: '코로나19 전세계 추이',
+      geo: {
+          projection: {
+              type: 'robinson'
+          }
+      },
+
+    };
+    console.log(dataWorld);
+    Plotly.newPlot("worldView", dataWorld, layout, {showLink: false, resize: true});
+
+    });
 
     Plotly.d3.csv("./file/corona.csv", function(data){ processData(data) });
 
@@ -162,6 +192,7 @@
       var options = "";
       var traceAll = [];
 
+
       // var tables = "<thead><tr><th>날짜</th>";
 
       // for(var i=0; i<colsEng.length;i++){
@@ -170,7 +201,7 @@
 
       // tables += "</tr></thead><tbody>";
       for (var i=0; i<=lastindex; i++){
-        if(i == lastindex) dataGap = row;
+        if(i == lastindex) {dataGap = row;}
         row = allRows[i];
         date.push(row['Date']); 
         // tables += "<tr><th>"+ row['Date'] +"</th>";
@@ -185,7 +216,9 @@
           }
         }
         // tables += "</tr>";
+
       }
+
 
       $("#totalDied").text(row['TotalDied']);
       $("#totalInfected").text(row['Total']);
@@ -227,6 +260,8 @@
           y : data[latestdata[i]["num"]],
           name : latestdata[i]["name"] + "("+latestdata[i]["infected"]+")"
         });
+
+
         // tables += "<tr><th>"+ latestdata[i].name+"</th><td>"+latestdata[i].infected+"</td></tr>";
       }
 
@@ -240,7 +275,7 @@
         nationData($(this).val());
       });
 
-      // $("#coronaTable").html(tables);
+
 
 
     }
