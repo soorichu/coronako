@@ -105,3 +105,15 @@ h1.card-text{
   color : green;
   font-size: 15px;
 }
+
+.modebar--hover{
+  display: none;
+}
+
+.modebar-container{
+  padding: 0px;
+}
+
+.main-svg{
+  padding: 0px;
+}
