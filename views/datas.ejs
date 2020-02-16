@@ -115,6 +115,7 @@
     var dataGap;
     var latestdata = [];
 
+
     Plotly.d3.csv('./file/coronalatest.csv', function(err, rows){
       function unpack(rows, key) {
           return rows.map(function(row) { return row[key]; });
@@ -132,8 +133,8 @@
 
     var layout = {
       width: $( window ).width(),
-      height: $( window ).height()*0.8,
-      title: '코로나19 전세계 지도',
+      height: Math.min($( window ).height(), $( window ).width()),
+      title: '코로나19 전세계 지도(가로로 보세요)',
       geo: {
           projection: {
               type: 'robinson'
