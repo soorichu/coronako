@@ -127,12 +127,13 @@
         z: unpack(rows, 'Data'),
         text: unpack(rows, '국가'),
         autocolorscale: true,
+        showscale: false
     }];
 
     var layout = {
       width: $( window ).width(),
-      height: $( window ).height(),
-      title: '코로나19 전세계 추이',
+      height: $( window ).height()*0.8,
+      title: '코로나19 전세계 지도',
       geo: {
           projection: {
               type: 'robinson'
