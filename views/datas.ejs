@@ -118,18 +118,41 @@
 
     Plotly.d3.csv('./file/coronalatest.csv', function(err, rows){
       function unpack(rows, key) {
-          return rows.map(function(row) { return row[key]; });
+          return rows.map(function(row) { 
+            if(key=='Data')
+              return Number(row[key]);
+            else
+              return  row[key];
+          });
       }
 
+
+    var colorbar = [];
+    var datasorted = Array.from(new Set(unpack(rows, 'Data')));
+    datasorted.sort(function(a, b){
+      return a-b;
+    });
+   var distcolor = Math.floor(255/datasorted.length);
+   var maxdata = datasorted[datasorted.length-1];
+    for(var i = 0; i<datasorted.length; i++){
+      var rgb = 255-distcolor*(i);
+      colorbar.push([Math.floor(datasorted[i]/maxdata*50000)/50000, "rgb("+(rgb)+", "+(rgb*0.6)+", "+(rgb*0.6)+")"]);
+    }
+
+    // console.log(colorbar);
     var dataWorld = [{
         type: 'choropleth',
         locationmode: 'country names',
         locations: unpack(rows, 'Country'),
         z: unpack(rows, 'Data'),
         text: unpack(rows, '국가'),
-        autocolorscale: true,
+        // autocolorscale: true,
+        zmin:0,
+        zmax: maxdata,
         showscale: false, 
+        colorscale: colorbar,
     }];
+
 
     var layout = {
       width: $( window ).width(),
@@ -142,7 +165,7 @@
       },
 
     };
-    console.log(dataWorld);
+    // console.log(dataWorld);
     Plotly.newPlot("worldView", dataWorld, layout, {showLink: false, resize: true});
 
     });
