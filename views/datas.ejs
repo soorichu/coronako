@@ -134,12 +134,15 @@
     });
    var distcolor = Math.floor(255/datasorted.length);
    var maxdata = datasorted[datasorted.length-1];
-    for(var i = 0; i<datasorted.length; i++){
+    for(var i = 0; i<datasorted.length-3; i++){
       var rgb = 255-distcolor*(i);
-      colorbar.push([Math.floor(datasorted[i]/maxdata*50000)/50000, "rgb("+(rgb)+", "+(rgb*0.6)+", "+(rgb*0.6)+")"]);
+      // rgb = Math.exp(rgb);
+      colorbar.push([Math.floor(datasorted[i]/maxdata*50000)/50000, "rgb("+(255)+", "+(rgb)+", "+(rgb)+")"]);
     }
 
-    // console.log(colorbar);
+    colorbar.push([1, "rgb(255, 0, 0)"]);
+
+    console.log(colorbar);
     var dataWorld = [{
         type: 'choropleth',
         locationmode: 'country names',
