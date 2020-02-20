@@ -25,20 +25,20 @@
     $("#search").click(function(){
        if($("#searchbar").css("display") == "none"){
         $("#searchbar").slideDown();
-        $("#keyword").focus();
-        if($("#keyword").val()!=""){
-          $("#menu_wrap").fadeIn();
-        }
+        $("#keyword").val("").focus();
       }else{
         $("#searchbar").slideUp();
         $("#menu_wrap").fadeOut();
-        // removeMarker();
+        removeMarker();
       }
     });
     $(document).keydown(function(event){
       if($("#searchbar").css("display")!="none" && event.keyCode=='13'){
+        removeMarker();
         var keyword = $("#keyword").val();
-        if(keyword.indexOf("확진자")>-1 || keyword.indexOf("감염자")>-1){
+        if(/^[0-9]/.test(keyword) || keyword.indexOf("확진자")>-1 || keyword.indexOf("감염자")>-1){
+
+          $("#personModalCenter"+keyword.replace(/[^0-9]/g,"")).modal("show");
           searchPerson(keyword.replace(/[^0-9]/g,""));
         }else{
           searchPlaces();
@@ -104,7 +104,7 @@
       if(personData.length > 0){
         displayPerson(personData);
       }else{
-        alert("확진자가 존재하지 않습니다.");
+        alert("확진자 경로가 존재하지 않습니다.");
         $("#menu_wrap").hide();
         return;
       }
@@ -471,7 +471,7 @@
                     '<div class="modaldiv">'+
                       '<div>'+person.age+'세 '+person.country + " " + person.sex +'</div>'+
                       '<div>'+ person.date +'에 확진</div>'+
-                      '<div>'+person.step+'차 감염자로 현재 '+person.hospital+'에서 '+person.state+'</div>'+
+                      '<div>'+person.step+'자로 현재 '+person.hospital+'에서 '+person.state+'</div>'+
                       '<hr>'+
                       '<div>'+ person.etc +'</div>'+
                     '</div>'+

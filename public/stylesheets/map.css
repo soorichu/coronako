@@ -23,12 +23,13 @@
     .map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
 .map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000;text-decoration: none;}
 .map_wrap {position:relative;width:100%;height:500px;}
-#menu_wrap {position:absolute;top:100px;left:0;bottom:0;width:250px;margin:10px;padding:5px;overflow-y:auto;background:rgba(255, 255, 255, 0.55);z-index: 1;font-size:12px;border-radius: 10px;}
+#menu_wrap {position:absolute;top:100px;left:0;bottom:0;width:250px;margin:10px;padding:5px;overflow-y:auto;background:rgba(255, 255, 255, 0.5);z-index: 1;font-size:12px;border-radius: 10px;}
 .bg_white {background:#fff;}
 #menu_wrap hr {display: block; height: 1px;border: 0; border-top: 2px solid #5F5F5F;margin:3px 0;}
 #menu_wrap .option{text-align: center;}
 #menu_wrap .option p {margin:10px 0;}  
 #menu_wrap .option button {margin-left:5px;}
+#menu_wrap {font-weight: bold;}
 #placesList {padding-inline-start: 10px;}
 #placesList li {list-style: none;}
 #placesList .item {position:relative;border-bottom:1px solid #888;overflow: hidden;cursor: pointer;min-height: 65px;}
@@ -39,7 +40,7 @@
 #placesList .info .jibun {padding-left:26px;background:url(http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;}
 #placesList .info .tel {color:#009900;}
 #placesList .item .markerbgimg {width:20px; float:left;position:relative;width:36px; height:37px;margin:20px 0 0 10px;}
-#placesList .item .markerbg {float:left;position:relative;width:36px; height:37px;margin:20px 0 0 10px;background:url(../img/marker_number.png) no-repeat;}
+#placesList .item .markerbg {float:left;position:relative;width:36px; height:37px;margin:20px 0 0 10px;background:url(../img/marker_number.png) no-repeat; }
 #placesList .item .marker_1 {background-position: 0 -10px;}
 #placesList .item .marker_2 {background-position: 0 -56px;}
 #placesList .item .marker_3 {background-position: 0 -102px}
@@ -64,8 +65,13 @@
 .modaldiv div {text-align: left; margin: 5px; font-size: 15px;}
 .modal-content {max-width: 500px;}
 .modal-footer {padding:5px;}
-@media (min-width: 768px)
-.modal-dialog {
-    width: 500px;
-    margin: 30px auto;
+@media screen and (min-width: 768px){
+    .modal-dialog {
+        width: 500px;
+        margin: 30px auto;
+    }
+
+    #menu_wrap {
+        background:rgba(255, 255, 255, 0.9);
+    }
 }
