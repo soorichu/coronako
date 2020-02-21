@@ -115,10 +115,6 @@
     var dataGap;
     var latestdata = [];
 
-    var width = $( window ).width() > 600 ? $( window ).width():600;
-    var height = $( window ).height() > 400 ? $( window ).height():400;
-
-
     Plotly.d3.csv('./file/coronalatest.csv', function(err, rows){
       function unpack(rows, key) {
           return rows.map(function(row) { 
@@ -159,6 +155,9 @@
         colorscale: colorbar,
     }];
 
+    var width = $( window ).width() > 600 ? $( window ).width():600;
+    var height = $( window ).height() > 400 ? $( window ).height():400;
+    height = width<height ? width:height;
 
     var layout = {
       width: width,
@@ -213,9 +212,12 @@
         name : colsKor[index] +" 사망자수"
       }];
 
+      var width = $( window ).width() > 600 ? $( window ).width():600;
+      var height = $( window ).height() > 500 ? $( window ).height():500;
+
       var layout = { 
         title : colsKor[index] +" 감염자 및 사망자 그래프", 
-        height: width,
+        height: height,
         width: width,
       };
 
@@ -305,7 +307,10 @@
       // tables += "</tbody></table>";
 
       $("#nations").html(options);
-      Plotly.newPlot("world", traceAll, {title:'전세계 감염자 그래프', height: width, width: width});
+
+      var width = $( window ).width() > 600 ? $( window ).width():600;
+      var height = $( window ).height() > 500 ? $( window ).height():500;
+      Plotly.newPlot("world", traceAll, {title:'전세계 감염자 그래프', height: height, width: width});
 
       nationData('Korea');
       $("#nations").change(function(){
