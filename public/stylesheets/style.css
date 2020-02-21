@@ -119,3 +119,7 @@ h1.card-text{
 .main-svg{
   padding: 0px;
 }
+
+.link--impt {
+  display : none;
+}
