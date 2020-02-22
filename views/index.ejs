@@ -27,7 +27,10 @@
         $("#keyword").val("").focus();
     });
     $("#searchoption").change(function(){
-      $("#keyword").attr("placeholder", "40, 광주3, 부산2, ...");
+      if($("#searchoption").val()=="person")
+        $("#keyword").attr("placeholder", "31, 광주3, 부산2, ...");
+      else
+        $("#keyword").attr("placeholder", "인천정보산업고");
     });
 
     $("#search2").click(function(){
