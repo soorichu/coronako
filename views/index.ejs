@@ -91,7 +91,7 @@
     $("#menu_wrap").fadeIn();
     $.get("./file/position.json", function(data){
       var personData = $(data.positions).map(function(i, position){
-        if(Number(position.person)==id){
+        if(position.person==id || Number(position.person)==id){
           return {
             // title : position.date + " " + position.time +"\n" + position.loc,
             id : id,
