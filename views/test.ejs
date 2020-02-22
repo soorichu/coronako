@@ -69,7 +69,13 @@
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 var allText = rawFile.responseText;
-                $("#"+type).val(processData(allText));
+                var txt = processData(allText);
+                if(type=="people"){
+                  txt = '{"people":'+txt+'}';
+                }else{
+                  txt = '{"positions":'+txt+'}';
+                }
+                $("#"+type).val(txt);
                 $("#"+type).select();
                 document.execCommand("copy");
                 alert(type+" 카피 완료");
