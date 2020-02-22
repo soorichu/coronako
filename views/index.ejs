@@ -134,6 +134,7 @@
       removeAllChildNods(listEl);
       removeMarker();
 
+
       var linePath = [];
       for(var i=0; i<person.length; i++){
         var itemEl = getListPersonItem(i, person[i]);
@@ -171,6 +172,10 @@
       polyline.setMap(map);
 
       $("#search2").click(function(){
+          polyline.setMap(null); 
+      });
+
+      $("#keyword").change(function(){
           polyline.setMap(null); 
       });
   }
