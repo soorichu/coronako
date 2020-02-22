@@ -23,25 +23,35 @@
     $("#logo").hide();
     $("#search").css("display", "inline");
     $("#search").click(function(){
-       if($("#searchbar").css("display") == "none"){
-        $("#searchbar").slideDown();
+        $("#searchbar").fadeIn();
+        $("#sitename").hide();
         $("#keyword").val("").focus();
-      }else{
-        $("#searchbar").slideUp();
-        $("#menu_wrap").fadeOut();
-        removeMarker();
-      }
+    });
+    $("#searchoption").change(function(){
+      $("#keyword").attr("placeholder", "40, 광주3, 부산2, ...");
+    });
+
+    $("#search2").click(function(){
+      $("#searchbar").fadeOut();
+      $("#sitename").fadeIn();
+      $("#menu_wrap").fadeOut();
+      removeMarker();
     });
     $(document).keydown(function(event){
       if($("#searchbar").css("display")!="none" && event.keyCode=='13'){
         removeMarker();
         var keyword = $("#keyword").val();
-        if(/^[0-9]/.test(keyword) || keyword.indexOf("확진자")>-1 || keyword.indexOf("감염자")>-1){
-
-          $("#personModalCenter"+keyword.replace(/[^0-9]/g,"")).modal("show");
-          searchPerson(keyword.replace(/[^0-9]/g,""));
-        }else{
+        var searchoption = $("#searchoption").val();
+        if(searchoption=="place"){  //장소 검색
           searchPlaces();
+        }else{  //확진자 검색
+          if(/^[0-9]/.test(keyword)){
+            $("#personModalCenter"+keyword.replace(/[^0-9]/g,"")).modal("show");
+            searchPerson(keyword.replace(/[^0-9]/g,""));
+          }else{
+            $("#personModalCenter"+keyword).modal("show");
+            searchPerson(keyword);
+          }
         }
         
       }
@@ -457,13 +467,20 @@
         clusterer.addMarkers(dangerMarkers);
     });
 
+    var nowperson;
+    function searchNowPerson(){
+      searchPerson(nowperson);
+    }
+
     $.get("./file/people.json", function(data){
       $(data.people).map(function(i, person){
+
+        nowperson = person.person;
         var modal = '<div class="modal fade" id="personModalCenter'+ person.person +'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">' +
           '<div class="modal-dialog modal-dialog-centered" role="document">' +
             '<div class="modal-content">' +
               '<div class="modal-header">' +
-                '<h4 class="modal-title" id="exampleModalLongTitle"><img src="./img/sickperson.png"> '+person.person+'번 확진자 <a onclick="searchPerson('+ person.person +')"  data-dismiss="modal"> ▶ 동선</a></h4>' +
+                '<h4 class="modal-title" id="exampleModalLongTitle"><img src="./img/sickperson.png"> '+person.person+'번 확진자 <a onclick="searchPerson(\''+person.person+'\')"  data-dismiss="modal"> ▶ 동선</a></h4>' +
                 '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
                 '</button>'+
               '</div>'+
