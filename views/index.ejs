@@ -24,7 +24,6 @@
     $("#search").css("display", "inline");
     $("#search").click(function(){
         $("#searchbar").fadeIn();
-        $("#sitename").hide();
         $("#keyword").val("").focus();
     });
     $("#searchoption").change(function(){
@@ -32,10 +31,10 @@
     });
 
     $("#search2").click(function(){
-      $("#searchbar").fadeOut();
-      $("#sitename").fadeIn();
-      $("#menu_wrap").fadeOut();
       removeMarker();
+      $("#keyword").val("");
+      $("#searchbar").fadeOut();
+      $("#menu_wrap").fadeOut();
     });
     $(document).keydown(function(event){
       if($("#searchbar").css("display")!="none" && event.keyCode=='13'){
@@ -169,7 +168,7 @@
 
       polyline.setMap(map);
 
-      $("#search").click(function(){
+      $("#search2").click(function(){
           polyline.setMap(null); 
       });
   }
