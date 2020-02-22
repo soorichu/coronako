@@ -99,7 +99,6 @@
 
   function searchPerson(id){
     $("#searchbar").show();
-    $("#keyword").val(id+"번 확진자");
     $("#menu_wrap").fadeIn();
     $.get("./file/position.json", function(data){
       var personData = $(data.positions).map(function(i, position){
