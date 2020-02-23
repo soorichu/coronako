@@ -43,8 +43,12 @@
       $("#menu_wrap").fadeOut();
       $("#searchhint").slideUp();
     });
+    var oldVal;
     $("#keyword").on("propertychange change keyup paste input", function() {
       var currentVal = $(this).val();
+      if(oldVal==currentVal){
+        return;
+      }
       if(currentVal == ""){       
         $("#searchhint").html("");
       }
