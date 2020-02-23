@@ -28,9 +28,12 @@
     });
     $("#searchoption").change(function(){
       if($("#searchoption").val()=="person")
-        $("#keyword").attr("placeholder", "31, 광주3, 부산2, ...");
-      else
+        $("#keyword").attr("placeholder", "31, 부산1, 사망2, ...");
+      else{
         $("#keyword").attr("placeholder", "인천정보산업고");
+        $("#searchhint").html("");
+        $("#searchhint").slideUp();
+      }
     });
 
     $("#search2").click(function(){
@@ -38,8 +41,44 @@
       $("#keyword").val("");
       $("#searchbar").fadeOut();
       $("#menu_wrap").fadeOut();
+      $("#searchhint").slideUp();
     });
+    $("#keyword").on("propertychange change keyup paste input", function() {
+      var currentVal = $(this).val();
+      if(currentVal == ""){       
+        $("#searchhint").html("");
+        $("#searchhint").slideUp();
+      }
+      else{
+        if($("#menu_wrap").css("display")=='none' && $("#searchoption").val()=="person"){
+          $("#searchhint").slideDown();
+          $("#searchhint").html("");
+          matchHint(currentVal);
+        }
+      }
+    });
+
+    function matchHint(text){
+      $.get("./file/people.json", function(data){
+
+        $(data.people).map(function(i, person){
+          var newDiv = "";
+          if(text==person.person){
+            newDiv += "<div class='person' data-toggle='modal' data-target='#personModalCenter"+person.person+"' onclick='searchPerson(\""+person.person+"\")'>"+person.person+"번 <span class='detail'>"+person.etc.substring(0, 50)+"...</span></div>";
+            $("#searchhint").html(newDiv+$("#searchhint").html());
+          }else if(text.match(person.person) || person.etc.match(text)){
+            newDiv += "<div class='person' data-toggle='modal' data-target='#personModalCenter"+person.person+"' onclick='searchPerson(\""+person.person+"\")'>"+person.person+"번 <span class='detail'>"+person.etc.substring(0, 50)+"...</span></div>";
+            $("#searchhint").html($("#searchhint").html()+newDiv);
+          }
+          
+        }); 
+        
+      });
+    }
+ 
+
     $(document).keydown(function(event){
+      var selectDiv = 0;
       if($("#searchbar").css("display")!="none" && event.keyCode=='13'){
         removeMarker();
         var keyword = $("#keyword").val();
@@ -47,16 +86,23 @@
         if(searchoption=="place"){  //장소 검색
           searchPlaces();
         }else{  //확진자 검색
+          $("#searchhint").slideUp();
           if(/^[0-9]/.test(keyword)){
             $("#personModalCenter"+keyword.replace(/[^0-9]/g,"")).modal("show");
             searchPerson(keyword.replace(/[^0-9]/g,""));
           }else{
+            keyword = keyword.substring(0, 2)+keyword.replace(/[^0-9]/g,"");
             $("#personModalCenter"+keyword).modal("show");
             searchPerson(keyword);
           }
         }
         
-      }
+      //Not Yet
+      // }else if($("#searchhint").css("display")!="none" && event.keyCode == '38'){
+
+      // }else if($("#searchhint").css("display")!="none" && event.keyCode == '40'){
+
+       }
     });
     var lat = 37.555800, lng = 126.969732;  //기본 위도 경도 : 서울역
     var locPosition = new kakao.maps.LatLng(lat, lng);
@@ -100,6 +146,10 @@
   function searchPerson(id){
     $("#searchbar").show();
     $("#menu_wrap").fadeIn();
+    $("#searchoption").val("person").prop("selected", true);
+    $("#keyword").attr("placeholder", "31, 부산1, 사망2, ...");
+    $("#keyword").val(id);
+    $("#searchhint").html("").hide();
     $.get("./file/position.json", function(data){
       var personData = $(data.positions).map(function(i, position){
         if(position.person==id || Number(position.person)==id){
