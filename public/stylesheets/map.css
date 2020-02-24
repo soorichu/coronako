@@ -19,10 +19,9 @@ body, html{ height: 100%; margin: 0px;  overflow-y: hidden; overflow-x: hidden; 
 #searchbar{z-index: 2; background-color: rgb(248, 248, 248); padding: 0px; position:fixed; left:0px; top:0px; right:0px; margin: 0px;}
 .navbar-default{ z-index: 1; }
 #search{color:#f0ad4e;}
-#keyword{ margin-top: 16px; width: 95%; height:34px;box-shadow: none; border-radius: 0px;}
+#keyword{ margin-top: 16px; width: 95%; height:34px;border-radius: 0px;}
 /*#keyword:focus{border-color:orange; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px orange;}*/
 .input-group-addon{ background-color: #f8f8f8; border:0px; }
-#keyword:focus{border-color:orange;}
 #searchhint{z-index:1;background-color: rgb(248,248,248,0.6); height:100px; position:fixed; left:30px;top:50px;right:0px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; padding:17px;overflow: hidden;overflow-y: scroll;}
 .person{height:20px; margin-bottom:10px; overflow: hidden; font-weight: bold;}
 .detail{height:15px; overflow:hidden; color: gray; margin-left:10px; font-size:smaller;}
@@ -41,21 +40,9 @@ body, html{ height: 100%; margin: 0px;  overflow-y: hidden; overflow-x: hidden; 
   border-right: 0;
 }
 
-.btn.active.focus,
-.btn.active:focus,
-.btn.focus,
-.btn.focus:active,
-.btn:active:focus,
-.btn:focus {
-  outline: 0 !important;
-  outline-offset: 0  !important;
-  background-image: none  !important;
-  -webkit-box-shadow: none !important;
-  box-shadow: none  !important;
-}
 
 .input-group-addon{margin-right:0px;padding-right: 0px;}
-#searchoption{margin-right:0px;border-radius: 30px 0px 0px 30px; height:35px;box-shadow:none;}
+#searchoption{margin-right:0px;border-radius: 30px 0px 0px 30px; height:35px;}
 .map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
 .map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000;text-decoration: none;}
 .map_wrap {position:relative;width:100%;height:500px;}
