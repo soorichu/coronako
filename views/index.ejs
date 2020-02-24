@@ -24,11 +24,14 @@
     $("#search").css("display", "inline");
     $("#search").click(function(){
         $("#searchbar").fadeIn();
+        $("#searchhint").slideDown();
         $("#keyword").val("").focus();
     });
     $("#searchoption").change(function(){
-      if($("#searchoption").val()=="person")
+      if($("#searchoption").val()=="person"){
+        $("#searchhint").slideDown();
         $("#keyword").attr("placeholder", "31, 부산1, 사망2, ...");
+      }
       else{
         $("#keyword").attr("placeholder", "인천정보산업고");
         $("#searchhint").html("");
@@ -54,7 +57,6 @@
       }
       else{
         if($("#menu_wrap").css("display")=='none' && $("#searchoption").val()=="person"){
-          $("#searchhint").slideDown();
           $("#searchhint").html("");
           matchHint(currentVal);
         }
