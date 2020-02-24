@@ -46,10 +46,10 @@
       $("#menu_wrap").fadeOut();
       $("#searchhint").slideUp();
     });
-    var oldVal;
+    var oldVal ="";
     $("#keyword").on("propertychange change keyup paste input", function() {
       var currentVal = $(this).val();
-      if(oldVal==currentVal){
+      if(oldVal.length === currentVal.length){
         return;
       }
       if(currentVal == ""){       
@@ -62,22 +62,26 @@
         }
       }
     });
-
+    var tempDivs = [];
     function matchHint(text){
+      tempDivs = [];
       $.get("./file/people.json", function(data){
-
         $(data.people).map(function(i, person){
           var newDiv = "";
           if(text==person.person){
-            newDiv += "<div class='person' data-toggle='modal' data-target='#personModalCenter"+person.person+"' onclick='searchPerson(\""+person.person+"\")'>"+person.person+"번 <span class='detail'>"+person.etc.substring(0, 50)+"...</span></div>";
-            $("#searchhint").html(newDiv+$("#searchhint").html());
+            if(!tempDivs.find(e => {if(person.person==e) return true;})){
+              tempDivs.push(person.person);
+              newDiv += "<div class='person' data-toggle='modal' data-target='#personModalCenter"+person.person+"' onclick='searchPerson(\""+person.person+"\")'>"+person.person+"번 <span class='detail'>"+person.etc.substring(0, 50)+"...</span></div>";
+              $("#searchhint").html(newDiv+$("#searchhint").html());
+            }
           }else if(text.match(person.person) || person.etc.match(text)){
-            newDiv += "<div class='person' data-toggle='modal' data-target='#personModalCenter"+person.person+"' onclick='searchPerson(\""+person.person+"\")'>"+person.person+"번 <span class='detail'>"+person.etc.substring(0, 50)+"...</span></div>";
-            $("#searchhint").html($("#searchhint").html()+newDiv);
+            if(!tempDivs.find(e => {if(person.person==e) return true;})){
+              tempDivs.push(person.person);
+              newDiv += "<div class='person' data-toggle='modal' data-target='#personModalCenter"+person.person+"' onclick='searchPerson(\""+person.person+"\")'>"+person.person+"번 <span class='detail'>"+person.etc.substring(0, 50)+"...</span></div>";
+              $("#searchhint").html($("#searchhint").html()+newDiv);
+            }
           }
-          
         }); 
-        
       });
     }
  
