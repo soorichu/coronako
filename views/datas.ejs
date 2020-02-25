@@ -36,7 +36,7 @@
   </div>
 
   <hr>
-  <h4 style="text-align: center; margin-top:10px;">코로나 바이러스 <select id="nations" class="btn btn-default dropdown-toggle"></select> 추이</h4>
+  <h4 style="text-align: center; margin-top:10px;">코로나 바이러스 <select id="nations" class="btn btn-default dropdown-toggle"></select> 추이</h4><p style="text-align: center; margin-top:2px;">2020-02-25 해외감염병NOW 9시 기준 데이터</p>
   <div class="container-fluid bg-3 text-center"> 
     <div class="row">
       <div class="col-xs-6 col=sm-6 col-md-6 col-lg-6">
@@ -93,6 +93,7 @@
       $(".row div").css("font-size", font_size/3);
       $(".card-body h1").css("font-size", font_size);
       $("h4").css("font-size", font_size/2.5);
+      $("#nations").css("font-size", font_size/4);
 
     }
 
@@ -133,6 +134,7 @@
     var dataDied = new Array(len);
     var dataGap;
     var latestdata = [];
+
 
     Plotly.d3.csv('./file/coronalatest.csv', function(err, rows){
       function unpack(rows, key) {
@@ -305,8 +307,6 @@
       for(var i=0; i<len; i++){
         if(colsEng[i]==='Total'){
           options += "<option value='"+colsEng[i]+"' selected>"+colsKor[i]+"</option>";
-        }else if(colsEng[i]=='Korea'){
-
         }
         else{
           options += "<option value='"+colsEng[i]+"'>"+colsKor[i]+"</option>";
