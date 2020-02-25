@@ -62,6 +62,7 @@ getHTML()
     });
     return numList;
   }).then(res => {
+  	console.log(res);
  	kor = copyObject(res);
   }
  );
@@ -145,6 +146,7 @@ getHTML()
 //  );
 
 // console.log(infected);
+console.log(kor);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
