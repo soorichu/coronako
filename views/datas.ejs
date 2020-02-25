@@ -4,75 +4,71 @@
  <% include partials/head %> 
 </head>
 <body>
-<% include partials/menu %>
-  <h4 style="text-align: center;margin:30px;"> 2020-02-24 질병관리본부 9시 해외감염병NOW 9시 기준</h4>
-<div class="container-fluid bg-3 text-center"> 
-<div id="worldView"></div><hr>
-<div class="row">
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-header">
-        전세계 감염자수
+  <% include partials/menu %>
+    <h4 style="text-align: center;margin:30h4x;"> 질병관리본부 실시간</p>
+  <div class="container-fluid bg-3 text-center"> 
+    <div class="row">
+      <div class="col-xs-6 col=sm-6 col-md-6 col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            한국 감염자수
+          </div>
+          <div class="card-body">
+            <h1 class="card-text"  id="koreaInfected"><%= koInf %><div class="spinner-border text-warning" role="status">
+            </div></h1>
+<!--             <span class="red">(<span id="koreaInfectedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span> -->
+          </div>
+        </div>
       </div>
-      <div class="card-body">
-        <h1 class="card-text" id="totalInfected"><div class="spinner-border text-warning" role="status">
-  <span class="sr-only">Loading...</span>
-</div></h1>
-        <span class="red">(<span id="totalInfectedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
+      <div class="col-xs-6 col=sm-6 col-md-6 col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            한국 사망자수
+          </div>
+          <div class="card-body">
+            <h1 class="card-text"  id="koreaDied"><%= koDie %><div class="spinner-border text-warning" role="status">
+            </div></h1>
+<!--             <span class="red">(<span id="koreaDiedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span> -->
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-header">
-        전세계 사망자수
-      </div>
-      <div class="card-body">
-        <h1 class="card-text" id="totalDied"><div class="spinner-border text-warning" role="status">
-  <span class="sr-only">Loading...</span>
-</div></h1>
-        <span class="red">(<span id="totalDiedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
+
   <hr>
   <h4 style="text-align: center; margin-top:10px;">코로나 바이러스 <select id="nations" class="btn btn-default dropdown-toggle"></select> 추이</h4>
-<div class="container-fluid bg-3 text-center"> 
-<div class="row">
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-header">
-        <span class="nation">한국</span> 감염자수
+  <div class="container-fluid bg-3 text-center"> 
+    <div class="row">
+      <div class="col-xs-6 col=sm-6 col-md-6 col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            <span class="nation">총</span> 감염자수
+          </div>
+          <div class="card-body">
+            <h1 class="card-text"  id="nationInfected"><div class="spinner-border text-warning" role="status">
+            </div></h1>
+            <span class="red">(<span id="nationInfectedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
+          </div>
+        </div>
       </div>
-      <div class="card-body">
-        <h1 class="card-text"  id="nationInfected"><div class="spinner-border text-warning" role="status">
-  <span class="sr-only">Loading...</span>
-</div></h1>
-        <span class="red">(<span id="nationInfectedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
+      <div class="col-xs-6 col=sm-6 col-md-6 col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            <span class="nation">총</span> 사망자수
+          </div>
+          <div class="card-body">
+            <h1 class="card-text"  id="nationDied"><div class="spinner-border text-warning" role="status">
+            </div></h1>
+            <span class="red">(<span id="nationDiedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-header">
-        <span class="nation">한국</span> 사망자수
-      </div>
-      <div class="card-body">
-        <h1 class="card-text"  id="nationDied"><div class="spinner-border text-warning" role="status">
-  <span class="sr-only">Loading...</span>
-</div></h1>
-        <span class="red">(<span id="nationDiedGap"></span> <span class="glyphicon glyphicon-circle-arrow-up"></span>)</span>
-      </div>
-    </div>
-  </div>
 </div>
-</div>
-</div>
-  <div id="korea" style="width:100%;"></div>
-  <hr>
-  <div id="world" style="width:100%;"></div>
+<div id="korea" style="width:100%;"></div>
+<hr>
+<div id="worldView" style="width:100%;"></div>
   <!-- <h4 style="text-align: center; margin-top:10px;">
     코로나 바이러스 전세계 테이블
   </h4>
@@ -81,7 +77,28 @@
 </body>
 <% include partials/script %>
 <script>
+  var width, height;
+
   $(function(){
+
+    $(window).resize(function(){
+      sizeMake();
+    });
+
+    function sizeMake(){
+      width = $(window).width();
+      heigth = $(window).height();
+
+      var font_size = width/12;
+      $(".row div").css("font-size", font_size/3);
+      $(".card-body h1").css("font-size", font_size);
+      $("h4").css("font-size", font_size/2.5);
+
+    }
+
+    sizeMake();
+
+
 
     $("#logo").css("display", "inline");
     $("#search").hide();
@@ -89,27 +106,27 @@
 
     var date = [];
     var colsEng = [
-                   'Total', 'China', 'OutsideChina', 'Korea',
-                   'HongKong', 'Taiwan', 'Macao', 'Thiland',
-                   'Singapore', 'Japan', 'Vietnam', 'Nepal',
-                   'Malaysia', 'Cambodia', 'SirLangKa', 'UAE',
-                   'India', 'Philippine', 'Iran', 'Lebanon', 'Israel',
-                   'USA', 'Canada',
-                   'France', 'Germany', 'Finland', 'Italy',
-                   'UK', 'Russia', 'Sweden', 'Spain', 
-                   'Belgium', 'Australia', 'Egypt'
-                  ];
+    'Total', 'China', 'OutsideChina', 'Korea',
+    'HongKong', 'Taiwan', 'Macao', 'Thiland',
+    'Singapore', 'Japan', 'Vietnam', 'Nepal',
+    'Malaysia', 'Cambodia', 'SirLangKa', 'UAE',
+    'India', 'Philippine', 'Iran', 'Lebanon', 'Israel',
+    'USA', 'Canada',
+    'France', 'Germany', 'Finland', 'Italy',
+    'UK', 'Russia', 'Sweden', 'Spain', 
+    'Belgium', 'Australia', 'Egypt'
+    ];
     var colsKor = [
-                   '총', '중국', '중국 외', '한국',
-                   '홍콩', '태국', '마카오', '대만',
-                   '싱가포르', '일본', '베트남', '네팔',
-                   '말레이시아', '캄보디아', '스리랑카', '아랍에미리트',
-                   '인도', '필리핀', '이란', '레바논', '이스라엘',
-                   '미국', '캐나다',
-                   '프랑스', '독일', '핀란드', '이탈리아',
-                   '영국', '러시아', '스웨덴', '스페인', 
-                   '벨기에', '호주', '이집트'
-                  ];
+    '총', '중국', '중국 외', '한국',
+    '홍콩', '태국', '마카오', '대만',
+    '싱가포르', '일본', '베트남', '네팔',
+    '말레이시아', '캄보디아', '스리랑카', '아랍에미리트',
+    '인도', '필리핀', '이란', '레바논', '이스라엘',
+    '미국', '캐나다',
+    '프랑스', '독일', '핀란드', '이탈리아',
+    '영국', '러시아', '스웨덴', '스페인', 
+    '벨기에', '호주', '이집트'
+    ];
 
     var len = colsEng.length;
     var data = new Array(len);
@@ -119,63 +136,60 @@
 
     Plotly.d3.csv('./file/coronalatest.csv', function(err, rows){
       function unpack(rows, key) {
-          return rows.map(function(row) { 
-            if(key=='Data')
-              return Number(row[key]);
-            else
-              return  row[key];
-          });
+        return rows.map(function(row) { 
+          if(key=='Data')
+            return Number(row[key]);
+          else
+            return  row[key];
+        });
       }
 
 
-    var colorbar = [];
-    var datasorted = Array.from(new Set(unpack(rows, 'Data')));
-    datasorted.sort(function(a, b){
-      return a-b;
-    });
-   var distcolor = Math.floor(255/datasorted.length);
-   var maxdata = datasorted[datasorted.length-1];
-    for(var i = 0; i<datasorted.length-3; i++){
-      var rgb = 255-distcolor*(i);
+      var colorbar = [];
+      var datasorted = Array.from(new Set(unpack(rows, 'Data')));
+      datasorted.sort(function(a, b){
+        return a-b;
+      });
+      var distcolor = Math.floor(255/datasorted.length);
+      var maxdata = datasorted[datasorted.length-1];
+      for(var i = 0; i<datasorted.length-3; i++){
+        var rgb = 255-distcolor*(i);
       // rgb = Math.exp(rgb);
       colorbar.push([Math.floor(datasorted[i]/maxdata*50000)/50000, "rgb("+(255)+", "+(rgb)+", "+(rgb)+")"]);
     }
 
     colorbar.push([1, "rgb(255, 0, 0)"]);
 
-    console.log(colorbar);
+    // console.log(colorbar);
     var dataWorld = [{
-        type: 'choropleth',
-        locationmode: 'country names',
-        locations: unpack(rows, 'Country'),
-        z: unpack(rows, 'Data'),
-        text: unpack(rows, '국가'),
+      type: 'choropleth',
+      locationmode: 'country names',
+      locations: unpack(rows, 'Country'),
+      z: unpack(rows, 'Data'),
+      text: unpack(rows, '국가'),
         // autocolorscale: true,
         zmin:0,
         zmax: maxdata,
         showscale: false, 
         colorscale: colorbar,
-    }];
+      }];
 
-    var width = $( window ).width() > 600 ? $( window ).width():600;
-    var height = $( window ).height() > 400 ? $( window ).height():400;
-    height = width<height ? width:height;
 
-    var layout = {
-      width: width,
-      height: height,
-      title: '코로나19 전세계 지도(PC에서 보길 권장)',
-      geo: {
+      var layout = {
+        width: $(window).width(),
+        height: $(window).height(),
+        title: '코로나19 전세계 지도',
+        geo: {
           projection: {
-              type: 'robinson'
+            type: 'robinson'
           }
-      },
+        },
 
-    };
+      };
     // console.log(dataWorld);
     Plotly.newPlot("worldView", dataWorld, layout, {showLink: true, resize: true});
 
-    });
+  });
 
     Plotly.d3.csv("./file/corona.csv", function(data){ processData(data) });
 
@@ -214,13 +228,11 @@
         name : colsKor[index] +" 사망자수"
       }];
 
-      var width = $( window ).width() > 600 ? $( window ).width():600;
-      var height = $( window ).height() > 500 ? $( window ).height():500;
-
       var layout = { 
         title : colsKor[index] +" 감염자 및 사망자 그래프", 
         height: height,
         width: width,
+        showlegend: false
       };
 
       Plotly.newPlot("korea", trace, layout);
@@ -261,19 +273,19 @@
       }
 
 
-      $("#totalDied").text(row['TotalDied']);
-      $("#totalInfected").text(row['Total']);
-      $("#nationDied").text(row['koreaDied']);
-      $("#nationInfected").text(row['Korea']);
+      // $("#totalDied").text(row['TotalDied']);
+      // $("#totalInfected").text(row['Total']);
+      $("#nationDied").text(row['TotalDied']);
+      $("#nationInfected").text(row['Total']);
       // $("#totalDiedGap").text(dataGap['TotalDied']);
       // $("#totalInfectedGap").text(dataGap['Total']);
       // $("#nationDiedGap").text(dataGap['KoreaDied']);
       // $("#nationInfectedGap").text(dataGap['Korea']);
 
-      changeGap("#totalDiedGap", dataGap['TotalDied']);
-      changeGap("#totalInfectedGap", dataGap['Total']);
-      changeGap("#nationDiedGap", dataGap['koreaDied']);
-      changeGap("#nationInfectedGap", dataGap['Korea']);
+      // changeGap("#totalDiedGap", dataGap['TotalDied']);
+      // changeGap("#totalInfectedGap", dataGap['Total']);
+      changeGap("#nationDiedGap", dataGap['TotalDied']);
+      changeGap("#nationInfectedGap", dataGap['Total']);
 
 
       // console.log(dataGap);
@@ -291,10 +303,13 @@
       // var tables = "<table class='table table-striped'><thead><tr><th>국가</th><th>감염자수</th></tr></thead><tbody>";
 
       for(var i=0; i<len; i++){
-        if(colsEng[i]==='Korea'){
-            options += "<option value='"+colsEng[i]+"' selected>"+colsKor[i]+"</option>";
-        }else{
-            options += "<option value='"+colsEng[i]+"'>"+colsKor[i]+"</option>";
+        if(colsEng[i]==='Total'){
+          options += "<option value='"+colsEng[i]+"' selected>"+colsKor[i]+"</option>";
+        }else if(colsEng[i]=='Korea'){
+
+        }
+        else{
+          options += "<option value='"+colsEng[i]+"'>"+colsKor[i]+"</option>";
         }
         traceAll.push({
           x : date, 
@@ -310,11 +325,9 @@
 
       $("#nations").html(options);
 
-      var width = $( window ).width() > 600 ? $( window ).width():600;
-      var height = $( window ).height() > 500 ? $( window ).height():500;
-      Plotly.newPlot("world", traceAll, {title:'전세계 감염자 그래프', height: height, width: width});
+      // Plotly.newPlot("world", traceAll, {title:'전세계 감염자 그래프', height: height, width: width,showlegend: false});
 
-      nationData('Korea');
+      nationData('Total');
       $("#nations").change(function(){
         nationData($(this).val());
       });

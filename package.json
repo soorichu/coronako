@@ -6,7 +6,9 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
+    "cheerio": "^1.0.0-rc.3",
     "cookie-parser": "^1.4.4",
     "debug": "~2.6.3",
     "ejs": "2.5.7",
@@ -15,6 +17,7 @@
     "morgan": "^1.9.1",
     "nodemon": "^2.0.2",
     "path": "^0.12.7",
+    "request": "^2.88.2",
     "serve-favicon": "~2.4.2"
   }
 }
