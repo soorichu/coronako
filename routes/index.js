@@ -164,7 +164,7 @@ router.get('/test', function(req, res, next){
 
 router.get('/datas', function(req, res, next) {
 	res.render('datas', {page:'데이터-전세계 코로나 바이러스 추이', menuId:'datas', 
-		koInf:kor[0], koDie:kor[2],
+		koInf:kor[0], koDie:kor[2], koRec:kor[1]
 	});
 });
 
