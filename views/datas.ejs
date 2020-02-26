@@ -133,7 +133,7 @@
     $("#updateicon").click(function(){
       clearInterval(interval);
       getKoreaData();
-      interval = setInterval(function(){getKoreaData();}, 6000);
+      interval = setInterval(function(){getKoreaData();}, 60000);
     });
 
     $(window).resize(function(){
