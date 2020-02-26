@@ -47,7 +47,7 @@ router.get('/getKoreaData', function(req, res, next){
 		});
 		return numList;
 	}).then(result => {
-		console.log(result);
+		// console.log(result);
  	// kor = copyObject(result);
  	res.send({result:result});
  });

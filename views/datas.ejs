@@ -6,6 +6,7 @@
 <body>
   <% include partials/menu %>
     <h4 style="text-align: center;"> 코로나19 국내 현황</p>
+      <p style="text-align: center; margin-top:2px; " class="criteria">질병관리본부 <span id="updatetime"></span> 기준 <button id="updateicon" class="glyphicon glyphicon-refresh btn btn-default" style="border:0px;"></button></p>
   <div class="container-fluid bg-3 text-center"> 
     <div class="row">
       <div class="col-xs-4 col=sm-4 col-md-4 col-lg-4">
@@ -48,7 +49,7 @@
   </div>
 
   <hr>
-  <h4 style="text-align: center; margin-top:10px;">코로나19 <select id="nations" class="btn btn-default dropdown-toggle"></select> 추이</h4><p style="text-align: center; margin-top:2px; " id="critaria">2020-02-25 9시 기준 데이터</p>
+  <h4 style="text-align: center; margin-top:10px;">코로나19 <select id="nations" class="btn btn-default dropdown-toggle"></select> 추이</h4><p style="text-align: center; margin-top:2px; " class="criteria">2020-02-25 9시 기준 데이터</p>
   <div class="container-fluid bg-3 text-center"> 
     <div class="row">
       <div class="col-xs-6 col=sm-6 col-md-6 col-lg-6">
@@ -96,9 +97,14 @@
 </body>
 <% include partials/script %>
 <script>
-  var width, height;
-
+  
   $(function(){
+
+    function getDateTime(){
+      var date = new Date();
+      var text = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate() + " "+date.getHours() + ":"+date.getMinutes() + ":" + date.getSeconds();
+      $("#updatetime").text(text);
+    }
 
     function getKoreaData(){
       $.ajax({
@@ -107,11 +113,10 @@
         data: {data:"request"},
         dataType: 'json',
         success: function(result){
-          if(result){
-            $("#koreaInfected").text(result.result[0]);
-            $("#koreaDied").text(result.result[2]);
-            $("#koreaRecovered").text(result.result[1]);
-          }
+          $("#koreaInfected").text(result.result[0]);
+          $("#koreaDied").text(result.result[2]);
+          $("#koreaRecovered").text(result.result[1]);
+          getDateTime();
         },
         error: function(result){
           alert("에러! 계속 안 되면 soorichu@gmail.com 으로 알려주세요!");
@@ -121,14 +126,21 @@
     }
 
     getKoreaData();
-    setInterval(function(){
+    var interval = setInterval(function(){
       getKoreaData();
-    }, 10000);
+    }, 6000);
+
+    $("#updateicon").click(function(){
+      clearInterval(interval);
+      getKoreaData();
+      interval = setInterval(function(){getKoreaData();}, 6000);
+    });
 
     $(window).resize(function(){
       sizeMake();
     });
 
+    var width, height;
     function sizeMake(){
       width = $(window).width();
       heigth = $(window).height();
@@ -139,7 +151,7 @@
       $("h4").css("font-size", font_size/2.5);
       $("#nations").css("font-size", font_size/4);
       $("#viewtype").css("font-size", font_size/3);
-      $("#critaria").css("font-size", font_size/3);
+      $(".criteria").css("font-size", font_size/5);
 
     }
 
