@@ -31,3 +31,37 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+//크롤링
+const axios = require("axios");
+const cheerio = require("cheerio");
+
+app.get('/getKoreaData', function(req, res){
+
+	console.log("Success GET "+req.query.data);
+
+	async function getHTML() {
+		try {
+			return await axios.get("http://ncov.mohw.go.kr/index_main.jsp");
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	getHTML()
+	.then(html => {
+		let numList = [];
+		const $ = cheerio.load(html.data);
+		const bodyList = $(".co_cur .num")
+		bodyList.each(function(i, elem) {
+			numList[i] = $(this).text().replace(/[^0-9]/g,"");
+		});
+		return numList;
+	}).then(result => {
+		console.log(result);
+ 	// kor = copyObject(result);
+ 	res.send({result:result});
+ });
+
+});
+
