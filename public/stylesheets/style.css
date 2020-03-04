@@ -123,3 +123,18 @@ h1.card-text{
 .link--impt {
   display : none;
 }
+
+#provincedata tr{background-color:white;}
+#provincedata tr:hover{background-color: #f0ad4e88;}
+#DEVMODE{color:#f8f8f8;}
+
+.provincemap .btn{
+  display:none;
+}
+
+#circlechart .svg-container{
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}

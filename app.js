@@ -4,8 +4,7 @@ var logger = require('morgan');
 var index = require('./routes/index');
 var app = express();
 
-
-// view engine setup
+// view engine setup ..
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -30,38 +29,33 @@ app.use(function(err, req, res, next) {
   res.render('error', {status:err.status, message:err.message});
 });
 
-module.exports = app;
-
-//크롤링
-const axios = require("axios");
-const cheerio = require("cheerio");
-
-app.get('/getKoreaData', function(req, res){
-
-	console.log("Success GET "+req.query.data);
-
-	async function getHTML() {
-		try {
-			return await axios.get("http://ncov.mohw.go.kr/index_main.jsp");
-		} catch (error) {
-			console.error(error);
-		}
-	}
-
-	getHTML()
-	.then(html => {
-		let numList = [];
-		const $ = cheerio.load(html.data);
-		const bodyList = $(".co_cur .num")
-		bodyList.each(function(i, elem) {
-			numList[i] = $(this).text().replace(/[^0-9]/g,"");
-		});
-		return numList;
-	}).then(result => {
-		console.log(result);
- 	// kor = copyObject(result);
- 	res.send({result:result});
- });
-
+const {Client} = require('pg');
+const client = new Client({
+  connectionString: 'POSTGRES_URL',
+  ssl: { rejectUnauthorized:true},
 });
 
+client.connect();
+// const promise = Promise.reject(new Error("Something happened!"));
+// setTimeout(async () => {
+//   // You want to process the result here...
+//   try {
+//     const result = await promise;
+//     console.log(`Hello, ${result.toUpperCase()}`)
+//   }
+//   // ...and handle any error here.
+//   catch (err) {
+//     console.error("There was an error:", err.message);
+//   }
+// }, 1000);
+
+//https://blog.gaerae.com/2015/10/postgresql-insert-update-returning.html
+// const {Client} = require('pg');
+// const client = new Client({
+// 	connectionString: 'postgres://eotuuoyeqjrcsl:ba65cfb9efd29d1eb77d0015026f1d84db6b7f79177cb018ed797622ef7881c1@ec2-54-157-78-113.compute-1.amazonaws.com:5432/d5fptoet21f0ls',
+// 	ssl: true,
+// });
+
+// client.connect();
+
+module.exports = app;

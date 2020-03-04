@@ -12,13 +12,67 @@
         <ul id="placesList"></ul>
         <div id="pagination"></div>
     </div>
+<a href="./about#aboutmap" id="gotoabout" class="glyphicon glyphicon-question-sign"></a>
 <img id="thispot" src="./img/thispot.png" onclick="geoLocation()"/>
 <!-- <img id="sickperson" src="./img/sickperson.png"/> -->
 
 <% include partials/foot %>
   <% include partials/script %>
-  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d8b15cafc174093e55e3a668723818fb&libraries=clusterer,services"></script>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ad7e1084a2f7af1bfc196511e4b3274f&libraries=clusterer,services"></script>
   <script>
+
+    $.ajax({
+      url:'mapcount',
+      methode:'GET',
+      data:{data:"request"},
+      dataType:'json',
+      error:function(){},
+      success:function(){},
+      complete: function(){}
+    });
+
+
+    Toast("info", '안드로이드 앱이 출시되었습니다.<br><a href="https://play.google.com/store/apps/details?id=site.coronaapp"><button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; CORONAPP v1.0 설치</button> </a>', "다운로드");
+
+    Toast("info", "상단의 검색 기능을 이용해보세요. 확진자 및 장소 검색이 가능합니다.");
+    Toast("warning", "위험도는 날짜 가중치와 거리 가중치로 계산된 수치이며, 15일이 지난 확진자의 동선은 자동으로 지워집니다.");
+    
+
+    function Toast(type, message, title){
+      toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "10000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      }
+
+      toastr[type](message, title)
+    }
+
+    var SEARCHMODE = false;
+
+    $("#DEVMODE").click(function(){
+      SEARCHMODE = true;
+      $("#searchbar").show();
+      $("#searchoption").val("place");
+      $("#keyword").attr("placeholder", "개발모드...");
+      Toast("info", "개발자 모드를 실행합니다..");
+    });
+
+    function getDateGap(day){
+      return (new Date()-new Date(day.slice(0,11)))/86400000;
+    }
 
     $("#logo").hide();
     $("#search").css("display", "inline");
@@ -45,14 +99,21 @@
       $("#searchbar").fadeOut();
       $("#menu_wrap").fadeOut();
       $("#searchhint").slideUp();
+      if(SEARCHMODE){
+        Toast("info","개발자 모드를 끝냅니다..");
+        SEARCHMODE = false;
+      }
     });
     var oldVal ="";
     $("#keyword").on("propertychange change keyup paste input", function() {
+      // console.log($("#keyword").val());
+      jQuery.Event( "keypress", { keyCode: 40 } );
+
       var currentVal = $(this).val();
-      if(oldVal.length === currentVal.length){
-        return;
-      }
-      if(currentVal == ""){       
+      // if(oldVal === currentVal){
+      //   return;
+      // }
+      if(currentVal === ""){       
         $("#searchhint").html("");
       }
       else{
@@ -62,26 +123,71 @@
         }
       }
     });
-    var tempDivs = [];
+
+    function searchPerson(id){
+      $("#searchbar").show();
+      $("#menu_wrap").fadeIn();
+      $("#searchoption").val("person").prop("selected", true);
+      $("#keyword").attr("placeholder", "31, 부산1, 사망2, ...");
+      $("#keyword").val(id);
+      $("#searchhint").html("").hide();
+      $.get("./file/position.json", function(data){
+        var personData = $(data.positions).map(function(i, position){
+          if((position.person==id || Number(position.person)==id)&& getDateGap(position.date)<=15){
+            return {
+            // title : position.date + " " + position.time +"\n" + position.loc,
+            id : id,
+            datetime : position.date + " " + position.time,
+            location : position.loc,
+            position : new kakao.maps.LatLng(Number(position.lat), Number(position.lng))
+          };
+        }
+
+
+      });
+        if(personData.length > 0){
+          displayPerson(personData);
+        }else{
+          Toast('warning',"확진자 경로가 존재하지 않습니다.");
+          $("#menu_wrap").hide();
+          return;
+        }
+
+      });
+    }
+    
     function matchHint(text){
-      tempDivs = [];
+      var tempDivs = [];$("#searchhint").html("");
       $.get("./file/people.json", function(data){
         $(data.people).map(function(i, person){
-          var newDiv = "";
-          if(text==person.person){
-            if(!tempDivs.find(e => {if(person.person==e) return true;})){
+          // var newDiv = "";
+          if(text==person.person.substring(0, text.length)){
+            // console.log(1, text, person.person);
+            // if(!tempDivs.find(e => person.person===e)){
+              // console.log(2, text, person.person);
               tempDivs.push(person.person);
-              newDiv += "<div class='person' data-toggle='modal' data-target='#personModalCenter"+person.person+"' onclick='searchPerson(\""+person.person+"\")'>"+person.person+"번 <span class='detail'>"+person.etc.substring(0, 50)+"...</span></div>";
-              $("#searchhint").html(newDiv+$("#searchhint").html());
-            }
+              // newDiv = "<div class='person' data-toggle='modal' data-target='#personModalCenter"+person.person+"' onclick='searchPerson(\""+person.person+"\")'>"+person.person+"번 <span class='detail'>"+person.etc.substring(0, 50)+"...</span></div>";
+              // $("#searchhint").html(newDiv+$("#searchhint").html()); newDiv="";
+            // }
           }else if(text.match(person.person) || person.etc.match(text)){
-            if(!tempDivs.find(e => {if(person.person==e) return true;})){
+            // if(!tempDivs.find(e => {if(person.person===e) return true;})){
               tempDivs.push(person.person);
-              newDiv += "<div class='person' data-toggle='modal' data-target='#personModalCenter"+person.person+"' onclick='searchPerson(\""+person.person+"\")'>"+person.person+"번 <span class='detail'>"+person.etc.substring(0, 50)+"...</span></div>";
-              $("#searchhint").html($("#searchhint").html()+newDiv);
-            }
+              // newDiv = "<div class='person' data-toggle='modal' data-target='#personModalCenter"+person.person+"' onclick='searchPerson(\""+person.person+"\")'>"+person.person+"번 <span class='detail'>"+person.etc.substring(0, 50)+"...</span></div>";
+              // $("#searchhint").html($("#searchhint").html()+newDiv); newDiv="";
+            // }
           }
         }); 
+        // console.log(tempDivs);
+        var uniqDivs = tempDivs.reduce(function(a, b){ if(a.indexOf(b)<0) a.push(b); return a;}, []);
+        $(data.people).map(function(i, person){
+          for(var t in tempDivs){
+            var newDiv;
+            if(tempDivs[t]===person.person){
+              newDiv = "<div class='person' data-toggle='modal' data-target=\"#personModalCenter"+person.person+"\" onclick=\"searchPerson(\'"+person.person+"\')\">"+person.person+"번 <span class='detail'>"+person.etc.substring(0, 50)+"...</span></div>";
+              $("#searchhint").html($("#searchhint").html()+newDiv); break;
+            }
+          }
+        });
       });
     }
  
@@ -144,43 +250,15 @@
         displayPlaces(data);
         displayPagination(pagination);
     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-        alert('검색 결과가 존재하지 않습니다.');
+        Toast('warning','검색 결과가 존재하지 않습니다.');
         return;
     } else if (status === kakao.maps.services.Status.ERROR) {
-        alert('검색 결과 중 오류가 발생했습니다.');
+        Toast('warning','검색 결과 중 오류가 발생했습니다.');
         return;
     }
   }
 
-  function searchPerson(id){
-    $("#searchbar").show();
-    $("#menu_wrap").fadeIn();
-    $("#searchoption").val("person").prop("selected", true);
-    $("#keyword").attr("placeholder", "31, 부산1, 사망2, ...");
-    $("#keyword").val(id);
-    $("#searchhint").html("").hide();
-    $.get("./file/position.json", function(data){
-      var personData = $(data.positions).map(function(i, position){
-        if(position.person==id || Number(position.person)==id){
-          return {
-            // title : position.date + " " + position.time +"\n" + position.loc,
-            id : id,
-            datetime : position.date + " " + position.time,
-            location : position.loc,
-            position : new kakao.maps.LatLng(Number(position.lat), Number(position.lng))
-          };
-        }
-      });
-      if(personData.length > 0){
-        displayPerson(personData);
-      }else{
-        alert("확진자 경로가 존재하지 않습니다.");
-        $("#menu_wrap").hide();
-        return;
-      }
-      
-    });
-  }
+
 
   function displayPerson(person){
       var listEl = document.getElementById('placesList'), 
@@ -274,9 +352,13 @@
                   infowindow.close();
               };
               itemEl.onclick = function(){
-                $("#searchbar").css("display", "none");
-                $("#menu_wrap").css("display", "none");
+                if(!SEARCHMODE){
+                  $("#searchbar").css("display", "none");
+                  $("#menu_wrap").css("display", "none");  
+                }
+
                 removeMarker();
+
                 conditions(placePosition.getLat(), placePosition.getLng());
               };
           })(marker, places[i].place_name, placePosition);
@@ -315,6 +397,8 @@
       el.className = 'item';
       return el;
   }
+
+
   function addMarker(position, idx, title) {
       var imageSrc = './img/marker_number.png', 
           imageSize = new kakao.maps.Size(36, 37), 
@@ -393,7 +477,7 @@
         conditions(lat, lng);
         
       } else { 
-          alert("현재 위치 사용 불가");
+          Toast('error', "현재 위치 사용 불가");
       }
     }
     $(".makeMarker .info").click(function(){
@@ -414,6 +498,7 @@
                 '            <div class="desc">' + 
                 '                <div class="ellipsis">반경 1키로 내 감염자 동선 '+small+'곳</div>' + 
                 '                <div class="ellipsis">반경 5키로 내 감염자 동선 '+large+'곳</div>' + 
+                '                <div class="ellipsis">(날짜 가중치로 계산한 결과)</div>'+
                 '            </div>' + 
                 '        </div>' + 
                 '    </div>' +    
@@ -437,23 +522,35 @@
     }
     
     function conditions(lat, lng){
+      if(SEARCHMODE){
+        $("#keyword").val(lat +","+lng);
+        $("#keyword").select();
+        document.execCommand("copy");
+        Toast("success", "좌표"+lat +","+lng+" 복사되었습니다..");  
+        $("#keyword").val("");
+      }
       var tempPosition = new kakao.maps.LatLng(lat, lng);
       var small = 0; //반경 1키로 이내
       var large = 0; //반경 5키로 이내
+      var dagegap = 1;
+      var dangerScore = 0;
       $.get("./file/position.json", function(data){
          $(data.positions).map(function(i, position){
-          var dist = distance(lat, lng, position.lat, position.lng);
-            if( dist < 5){
-              large++;
-              if( dist < 1){
-                small++;
+          dategap = getDateGap(position.date)
+          if(dategap<=15){
+            var dist = distance(lat, lng, position.lat, position.lng);
+              if( dist < 5){
+                large++; dangerScore += large*(1-(dategap/15));
+                if( dist < 1){
+                  small++; dangerScore += small*5*(1-(dategap/15));
+                }
               }
             }
          });
         var result, message;
-        if(small*5 + large*1 < 5){
+        if(dangerScore < 10){
           result = "GOOD";
-        }else if(small*5 + large*1 < 10){
+        }else if(dangerScore < 20){
           result = "SOSO";
         }else{
           result = "BAD";
@@ -504,16 +601,22 @@
           lineHeight: '61px'
         }]
     });
-    var dangerImage = "./img/dangerspot.png";
+
     var imageSize = new kakao.maps.Size(50, 55);
-    var markerImage = new kakao.maps.MarkerImage(dangerImage, imageSize);
     $.get("./file/position.json", function(data){
         var dangerMarkers = $(data.positions).map(function(i, position){
+          var dategap =getDateGap(position.date);
+          if(dategap<=15){
+            var option = "";
+            if(dategap/15>0.8) option = 0.4;
+            else if(dategap/15>0.6) option = 0.6;
+            else if(dategap/15>0.4) option = 0.8;
+            else option = "";
             var marker_danger = new kakao.maps.Marker({
               map: map,
               position : new kakao.maps.LatLng(Number(position.lat), Number(position.lng)),
-              title: position.loc+"\n"+position.date+" "+ position.time + "에 " +position.person+"번 확진자",
-              image: markerImage,
+              title: position.date+" "+ position.time+"\n" + position.loc+ " " +position.person+"번 확진자",
+              image: new kakao.maps.MarkerImage("./img/dangerspot"+option+".png", imageSize),
               clickable: true,
             });
             // marker_danger.setMap(map);
@@ -528,7 +631,9 @@
               infoWindow.open(map, marker_danger);
             });
             return marker_danger;
+          }
         });
+
         clusterer.addMarkers(dangerMarkers);
     });
 
@@ -569,7 +674,17 @@
         $("body").append(modal);
 
       }); 
+
     });
+    // var img = $("img[src='./img/dangerspot.png']");
+    // $.each(img, function(i, elm){
+    //   console.log(elm);
+    //   var opacity = 1-getDateGap(Number(elm.attr("title").substring(0,11)))/15;
+    //   elm.css("opacity", ""+opacity);
+    //   console.log(opacity);
+    // });
+
+    // $(img).css("opacity", 1-getDateGap(Number($("img", this).attr("title").substring(0,11)))/15);
 
 
   </script>

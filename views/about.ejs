@@ -6,10 +6,13 @@
 <body>
 <% include partials/menu %>
 <div class="container-fluid bg-3 text-center"> 
-
-  <div class="row">
-
-    <div>
+    <div class="row">
+    <div  class="col-xm-12 col-sm-6 col-md-6 col-lg-6">
+      <h3>CORONAPP APK 배포</h3><hr>
+      <p>20일의 심사 끝(2020.03.03.)에 구글 플레이 스토어에서 게시 허가가 떨어졌습니다. 기다려주신 분들 감사합니다.</p>
+      <a href="https://play.google.com/store/apps/details?id=site.coronaapp"><button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; CORONAPP v1.0 설치</button> </a>
+    </div><br>
+    <div class="col-xm-12 col-sm-6 col-md-6 col-lg-6">
       <h3>Notice</h3><hr>
       <p>감염증이 의심될 때 <br><a href="tel:1339"><button class="btn btn-warning"><h1><span class="glyphicon glyphicon-phone-alt"></span>&nbsp;1339</h1></button></a></p>
       <a id="showPamplet" href="#pamplet"><h4>올바른 손씻기 방법</h4></a><img src="./img/올바른손씻기.jpg" id="pamplet" style="display:none;">
@@ -17,7 +20,7 @@
   </div>
   <div class="row">
 
-    <div class="ccol-xm-12 col-sm-8 col-md-6 col-lg-4"> 
+    <div class="col-xm-12 col-sm-4 col-md-4 col-lg-4"> 
       <h3>Info</h3><hr>
       <p><a href="http://www.cdc.go.kr/index.es?sid=a2">질병관리본부 신종 코로나</a></p>
       <p><a href="http://www.xn--now-po7lf48dlsm0ya109f.kr/infect/occurrence_list.do">해외감염병NOW</a></p>
@@ -25,15 +28,15 @@
       <p><a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">[해외] 2019-nCoV Global Cases</a></p><br>
     </div>
 
-    <div class="col-xm-12 col-sm-8 col-md-6 col-lg-4"> 
+    <div class="col-xm-12 col-sm-4 col-md-4 col-lg-4"> 
       <h3>Data</h3><hr>
-      <a href="./file/corona.csv"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; corona.csv</button> </a><br>
-      <a href="./file/people.csv"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; people.csv</button> </a><br>
-      <a href="./file/position.csv"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; position.csv</button> </a><br>
+      <a href="./file/corona.json"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; corona.json</button> </a><br>
+      <a href="./file/people.json"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; people.json</button> </a><br>
+      <a href="./file/position.json"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-download-alt"></span>&nbsp; position.json</button> </a><br>
       <a href="mailto:soorichu@gmail.com"><button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-send"></span>&nbsp; 오류 신고 및 피드백</button></a><br><br>
     </div>
 
-    <div class="col-xm-12 col-sm-8 col-md-6 col-lg-4"> 
+    <div class="col-xm-12 col-sm-4 col-md-4 col-lg-4"> 
       <h3>Thanks!</h3><hr>
       <p>MAP : <a href="http://apis.map.kakao.com/">Kakao Maps API</a></p>
       <p>GRAPH : <a href="https://plot.ly/">Plotly</a></p>
@@ -42,33 +45,58 @@
 
   </div>
   <div class="row">
-    <div class="col-xm-12 col-sm-8 col-md-6 col-lg-4"> 
-      <h3>업데이트 일시에 대하여..</h3><hr>
-      <p style="text-align:left;">MAP의 동선 데이터는 2020.02.19. 이후 질본에서 더 이상 정리해주지 않아 지자체나 뉴스를 통해 구해야 해서 어려움이 많습니다. 무엇보다 증가하는 속도가 빠른 만큼 업데이트를 따라잡지 못하는 것 같습니다. 양해 부탁드립니다. 동선 및 정보에 대한 <a href="mailto:soorichu@gmail.com">피드백</a>은 언제나 환영합니다.</p>
-      <p style="text-align:left;"> DATA는 한국 질본의 데이터와 전세계 해외의 데이터로 나뉩니다. 한국의 데이터는 2.25.부로 질병관리본부에서 실시간으로 크롤링한 데이터 입니다. 원본 데이터가 달라질 경우 오류가 발생할 수 있습니다. 기다려 주시거나 알려 주시면 되도록 빨리 수정하겠습니다. 전세계 데이터는 통계를 위한 데이터로 해외감염병NOW의 9시 기준 데이터, 한국의 데이터는 질본 9시 기준입니다. 해외 데이터는 통계를 위한 것으로 일관성 유지를 위해 실시간 데이터를 제공하지 않습니다. 실시간으로 정확한 데이터를 원하신다면 <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">해외 사이트</a>를 참고해주세요.</p>
+    <div class="col-xm-12 col-sm-4 col-md-4 col-lg-4"> 
+      <h3 id="aboutmap">MAP 2020.03.03.</h3><hr>
+      <ul style="text-align:left;">
+        <li>MAP의 검색 기능은 확진자 검색과 장소 검색으로 나눕니다. 각각 드롭다운 옵션을 제대로 선택해야 기능합니다.</li>
+        <li>확진자 검색은 확진자 번호를 넣어주셔야 합니다. 예를 들어, 7번은 7을 입력하고, 인천5번 확진자는 인천5를 입력합니다. 힌트가 제시되니 그 중에서 고르셔도 좋습니다.</li>
+        <li>확진자 수가 너무 많은 대구, 경북, 서울을 제외하고 대부분 업데이트가 된 상태입니다.</li>
+        <li>업체의 피해가 우려되어 구체적인 업체명은 삭제합니다.</li>
+        <li>(예외) 병원, 진료소, 공공장소, 감염자가 많이 나온 장소, 접촉자를 찾아야 하는 경우 등</li>
+        <li><strong>동선 정보의 가중치(투명도) 계산방법</strong><br>
+          dategap : 동선이 생긴 날짜에서 오늘까지 날짜 차이 (0≤dategap<15)<br>
+          dategap이 15일이 이상이 되면 자동 삭제 됩니다.
+          가중치(투명도) = dategap/15 (0≤가중치<15) <br>
+          </li>
+        <li><strong>지역 위험도 계산방법</strong><br>
+          large[i] : i번 째 동선이 반경 5km 내이면 1 아니면 0<br> 
+          small[i] : i번 째 동선이 반경 1km 내이면 1 아니면 0<br>
+          dategap[i] : i번 째 동선 발생날에서 오늘까지의 날짜 갭(Gap)<br>
+          danger = ∑(large[i]×1×dategap[i] + small[i]×5×dategap[i]) (i=0,...,n)<br>
+          만약 0 ≤ danger < 10 이면 GOOD,<br>
+          만약 10 ≤ danger < 20 이면 SOSO,<br>
+          그게 아니면 BAD
+        </li>
+        <li>동선 정보에 대한 <a href="mailto:soorichu@gmail.com">피드백</a>은 언제나 환영합니다.</li>
+      </ul>
     </div>
-    <div class="col-xm-12 col-sm-8 col-md-6 col-lg-4">
-      <h3>동선 데이터에 대하여..</h3><hr>
-      <p style="text-align:left;"> 업체의 피해가 우려되어 확진자의 동선 중 병원과 공공기관을 제외한 구체적인 명칭을 삭제하였습니다. 코로나19 바이러스는 확진자의 비말로 전파되기 때문에 확진자가 다녀간 장소에 의해 감염되거나 하지 않습니다. </p>
-      <p style="text-align:left;">
-      확진자 동선은 해당 날짜와 시간에 확진자의 동선에 본인이 있었는지의 여부를 체크하는 데에만 사용하시기 바랍니다.(만약 그런데 증상이 나타난다면 즉시 1339로 연락하세요.)</p>
-      <p style="text-align:left;">현재 대구 및 경북 지역은 업데이트를 못하고 있습니다. 동선은 감염 초기의 지역사회에 유효한 것이기 때문에 지금은 감염 확산 초기의 지역 동선을 업데이트 하는데 최선을 다하고 있으니 양해 부탁드립니다. 현재 지역마다 새로 올라오는 확진자는 '인천1', '부산2', '경남1', '사망3'과 같이 지역명에 번호를 붙였습니다. 확진자 검색 시 참고 바라며 잘못된 부분이 있으면 반드시 알려주시고 누락된 부분이 있다면 언제나 <a href="mailto:soorichu@gmail.com">soorichu@gmail.com</a>으로 알려주시기 바랍니다.</p>
-      <p style="text-align:left;"> 코로나로 고생 중이 대구와 경북 지역에 응원과 격려를 보냅니다!</p>
+    <div class="col-xm-12 col-sm-4 col-md-4 col-lg-4">
+      <h3 id="aboutdata">Data 2020.03.03.</h3><hr>
+      <ul style="text-align:left;">
+        <li>국내 감염자 정보는 질병관리본부의 실시간 상황판을 크롤링 합니다. 질본이 트래픽에 많이 힘들어 하니 연타 하지 마시기 바랍니다.(특히 16시~18시 사이..)</li>
+        <li>지역별 감염자 정보 및 지도는 질병관리본부의 정보를 역시 크롤링한 것입니다. 근데 제 서버가 실시간 요청을 감당하지 못하는 것 같아 닫아놓은 상태입니다. 상황을 보아 방식을 바꾸거나 서버를 업그레이드 하겠습니다.</li>
+        <li>해외 감염자 정보는 해외감염병NOW의 일일상황보고와 한국 데이터는 질병관리본부의 16시 기준 입니다.</li>
+        <li>해외 정보는 해외 분도 보시므로 영문으로 기재하겠습니다. 양해 부탁드립니다.</li>
+        <li>해외감염병NOW는 크롤링이 어렵습니다. 그리고 데이터를 모아야 하기 때문에 실시간 정보를 제공하기 어렵습니다.</li>
+        <li>해외에 대한 실시간 데이터를 원하신다면 <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">해외 사이트</a>를 참고해주세요.</li>
+      </ul>
       <br>
     </div>
-
-    <div class="col-xm-12 col-sm-8 col-md-6 col-lg-4"> 
+    <div class="col-xm-12 col-sm-4 col-md-4 col-lg-4"> 
       <h3>기타..</h3><hr>
-      <p style="text-align:left;">소스 및 자료를 공개합니다. 별거 없는 자료들이지만 더 발전된 앱으로 기여해주신다면 더할나위 없이 좋을 것 같습니다. 힘든 시기에 개발자 분들의 재능과 힘을 보여주세요! </p>
-      <p> <a href="https://github.com/soorichu/coronako">https://github.com/soorichu/coronako</a></p style="text-align:left;" style="text-align:left;">
-      <p>해당 앱의 저작권은 개발자인 정수영(Chung SooYoung | soorichu@gmail.com)에 있습니다. 무단 도용 및 배포 시 저작권에 걸리 수 있습니다.</p>
-      <p>Copyright All right reserved @정수영(Chung SooYoung in Republic of Korea) | soorichu@gmail.com</p>
-      <p style="text-align:left;"> 코로나19를 이겨내는 가장 좋은 방법은 개인의 위생과 서로에 대한 배려가 아닐까 싶습니다. 비방과 미움보다는 배려와 격려로 한국 사회가 코비드19를 잘 이겨냈으면 하는 바람입니다. 감사합니다. :)</p><br>
+      <ul style="text-align:left;">
+        <li>소스 및 자료를 공개합니다. 별거 없는 자료들이지만 더 발전된 앱과 프로그램으로 기여해주시기 바랍니다.<br>
+          <a href="https://github.com/soorichu/coronako.git">https://github.com/soorichu/coronako.git</a>
+        </li>
+        <li>2020.02.25. 이후 데이터베이스 작업에 들어 가서 더 이상 소스를 public으로 공개할 수 없어 깃헙 업데이트는 중단 상태 입니다.</li>
+      </ul>
+      <ul style="text-align:left;">
+        <li>해당 앱의 저작권은 개발자인 정수영(Chung SooYoung | soorichu@gmail.com)에 있습니다. 무단 도용 및 배포 시 저작권에 걸리 수 있습니다.</li>
+        <li>Copyright All right reserved @정수영(Chung SooYoung in Republic of Korea) | soorichu@gmail.com</li>
+      </ul>
+      <p style="text-align:left;"> 코로나19를 이겨내는 가장 좋은 방법은 개인의 위생과 서로에 대한 배려가 아닐까 싶습니다. 비방과 미움보다는 배려와 격려로 코비드19를 잘 이겨냈으면 하는 바람입니다. :)</p><br>
     </div>
-
-
   </div>
-
 </div>
 <% include partials/foot %>
 </body>
@@ -76,6 +104,17 @@
 <script>
 
   $(function(){
+
+    $.ajax({
+      url:'aboutcount',
+      methode:'GET',
+      data:{data:"request"},
+      dataType:'json',
+      error:function(){},
+      success:function(){},
+      complete: function(){}
+    });
+
 
     $("#logo").css("display", "inline");
     $("#search").hide();

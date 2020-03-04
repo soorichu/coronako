@@ -5,32 +5,94 @@
 </head>
 <body>
 <% include partials/menu %>
-
 <div class="container-fluid bg-3 text-center">    
   <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-6">
       <button class="btn" onclick="peopleCSV2JSON()">peopleCSV2JSON()</button>
       <input id="people" type="text" class="form-control">
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-6">
       <button class="btn" onclick="positionCSV2JSON()">positionCSV2JSON()</button>
       <input id="position" type="text" class="form-control"></inpu>
    </div>
-   <div class="col-sm-4">
-      <input type="text" id="point1" value="37.536564, 126.636473" class="form-control"><br>
-      <input type="text" id="point2" value="37.518566, 126.673022" class="form-control"><br>
+    <div class="col-sm-6">
+      <button class="btn" onclick="coronaCSV2JSON()">coronaCSV2JSON()</button>
+      <input id="corona" type="text" class="form-control"></inpu>
+   </div>
+   <div class="col-sm-6">
+    <br><br>
+      <input type="text" id="point1" value="37.536564, 126.636473" class="form-control">
+      <input type="text" id="point2" value="37.518566, 126.673022" class="form-control">
       <button class="btn" onclick="gps2Distance()">gps2Distance()</button>
       <h4 id="distance"></h4>
    </div>
   </div>
 </div>
+
+<div class="row">
+  <button onclick="positionJSON2DB()" class="btn btn-default">positionJSON2DB()</button>
+</div>
+<div class="row">
+  <textarea class="form-control" id="query"></textarea>
+  <button onclick="getQuery()" class="btn btn-primary">쿼리</button>
+  <div style="width:100%;" id="query_result"></div>
+</div>
+
 <% include partials/foot %>
+
 </body>
 <% include partials/script %>
 <script>
   $("#logo").css("display", "inline");
   $("#search").hide();
-  //GPS 2 Distance
+
+  $("#query").css("height", $(window).height()*0.3);
+
+  function positionJSON2DB(){
+    $.ajax({
+      url:'/positionJSON2DB',
+      methode:"POST",
+      data : {data: "position request"},
+      dataType : 'text',
+      beforeSend: function(){
+        console.log("position query send...");
+      },
+      success: function(result){
+        console.log("position json to db success..");
+      },
+      error: function(){
+        console.log("position query err..");
+      }, 
+      complete: function(){
+        console.log("position to db complete...")
+      }
+
+    });
+  }
+
+  function getQuery(){
+
+    $.ajax({
+      url:'/query',
+      methode : "GET",
+      data: {data: $("#query").val()},
+      dataType: 'text',
+      beforeSend: function(){
+        console.log($("#query").val() +" send..");
+      },
+      success: function(){
+        console.log("query success");
+      },
+      error: function(){
+        console.log("query err");
+      }, 
+      complete: function(result){
+        $("#query_result").text(result);
+     }
+
+   });
+
+  }
   function gps2Distance(){
 
     var point1 = $("#point1").val().split(","); 
@@ -47,6 +109,25 @@
 
   }
 
+  function processData(csv){
+
+    var lines=csv.split("\n");
+    var result = [];
+    var headers=lines[0].split(",");
+
+    for(var i=1;i<lines.length;i++){
+
+      var obj = {};
+      var currentline = lines[i].split(",");
+
+      for(var j=0;j<headers.length;j++){ 
+        obj[headers[j]] = currentline[j];
+      }   
+     
+      result.push(obj);
+    }
+    return JSON.stringify(result);
+  }
 
 
 //CSV 2 JSON
@@ -85,24 +166,6 @@
     rawFile.send(null);
   }
   
-  function processData(csv){
 
-    var lines=csv.split("\n");
-    var result = [];
-    var headers=lines[0].split(",");
-
-    for(var i=1;i<lines.length;i++){
-
-      var obj = {};
-      var currentline = lines[i].split(",");
-
-      for(var j=0;j<headers.length;j++){ 
-        obj[headers[j]] = currentline[j];
-      }   
-     
-      result.push(obj);
-    }
-    return JSON.stringify(result);
-  }
 </script>
 </html>
