@@ -13,7 +13,7 @@
     "cookie-session": "^1.4.0",
     "debug": "~2.6.3",
     "ejs": "2.5.7",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "jade": "~1.11.0",
     "morgan": "^1.9.1",
     "nodemon": "^2.0.2",
